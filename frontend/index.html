@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentEase - Furniture & Appliance Rental System</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .navbar { background: #343a40; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .navbar a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .navbar a:hover { color: #007bff; }
+        
+        .tab-content { display: none; max-width: 800px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        
+        h1, h2, h3 { color: #333; text-align: center; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .full-width { grid-column: span 2; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #0056b3; }
+        
+        .filter-container { text-align: center; margin-bottom: 20px; }
+        .filter-btn { display: inline-block; padding: 8px 18px; margin: 0 5px; background: #e9ecef; border: 1px solid #ccc; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: #007bff; color: white; }
+        
+        .item-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #007bff; }
+        .meta-metrics { display: flex; gap: 15px; margin: 10px 0; font-weight: bold; background: #f8f9fa; padding: 10px; border-radius: 5px; }
+        .price { color: #28a745; }
+        .deposit { color: #dc3545; }
+        .badge { display: inline-block; background: #e9ecef; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        
+        .auth-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+        .auth-box { background: #f8f9fa; padding: 20px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a onclick="switchTab('catalog-tab')">🌐 Browse Catalog</a>
+        <a onclick="switchTab('vendor-tab')">🏢 Vendor Admin Panel</a>
+        <a onclick="switchTab('support-tab')">🛠️ Maintenance Support</a>
+        <a onclick="switchTab('auth-tab')">🔑 User Login & Register</a>
+    </div>
+
+    <div id="catalog-tab" class="tab-content active">
+        <h1>🛋️ RentEase Marketplace</h1>
+        <div class="filter-container">
+            <span class="filter-btn active" onclick="filterCategory('All', this)">All</span>
+            <span class="filter-btn" onclick="filterCategory('Furniture', this)">Furniture</span>
+            <span class="filter-btn" onclick="filterCategory('Appliance', this)">Appliances</span>
+        </div>
+        <div id="listings"></div>
+    </div>
+
+    <div id="vendor-tab" class="tab-content">
+        <h2>List a New Asset to Catalog</h2>
+        <form id="rentalForm" class="form-grid">
+            <div class="form-group full-width"><label>Item Title</label><input type="text" id="title" required></div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="category">
+                    <option value="Furniture">Furniture</option>
+                    <option value="Appliance">Appliance</option>
+                    <option value="Office Essentials">Office Essentials</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Condition</label><input type="text" id="condition" required></div>
+            <div class="form-group full-width"><label>Description</label><textarea id="description" rows="2" required></textarea></div>
+            <div class="form-group"><label>Rent / Month ($)</label><input type="number" id="price" required></div>
+            <div class="form-group"><label>Deposit ($)</label><input type="number" id="securityDeposit" required></div>
+            <div class="form-group"><label>Tenure</label><input type="text" id="tenureOptions" value="3, 6, 12 Months"></div>
+            <div class="form-group"><label>Delivery (Days)</label><input type="number" id="deliveryDays" value="3"></div>
+            <div class="form-group"><label>Contact Email</label><input type="email" id="contactEmail" required></div>
+            <div class="form-group"><label>Contact Phone</label><input type="tel" id="contactPhone" required></div>
+            <button type="submit" class="full-width">Publish Rental Item 🚀</button>
+        </form>
+    </div>
+
+    <div id="support-tab" class="tab-content">
+        <h2>🔧 File Maintenance & Support Ticket</h2>
+        <form id="supportForm">
+            <div class="form-group"><label>Rented Item Name</label><input type="text" id="ticketItem" required></div>
+            <div class="form-group"><label>Describe Issue / Damages</label><textarea id="ticketIssue" rows="3" required></textarea></div>
+            <div class="form-group"><label>Your Contact Node (Phone/Email)</label><input type="text" id="ticketContact" required></div>
+            <button type="submit">Submit Request Ticket 🛠️</button>
+        </form>
+    </div>
+
+    <div id="auth-tab" class="tab-content">
+        <h1>🔑 Authentication Gateway</h1>
+        <div class="auth-container">
+            <div class="auth-box">
+                <h3>Create New Profile</h3>
+                <form id="registerForm">
+                    <div class="form-group"><label>Username</label><input type="text" id="regName" required placeholder="e.g., JohnDoe"></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="regEmail" required placeholder="name@domain.com"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <button type="submit" style="background-color: #28a745;">Register Account</button>
+                </form>
+            </div>
+
+            <div class="auth-box">
+                <h3>User Sign In</h3>
+                <form id="loginForm">
+                    <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" required placeholder="name@domain.com"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="loginPass" required placeholder="••••••••"></div>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cachedItems = [];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        async function fetchCatalog() {
+            try {
+                const res = await fetch('/api/properties');
+                cachedItems = await res.json();
+                renderCatalog(cachedItems);
+            } catch(e) {
+                console.error("Catalog connection failure", e);
+            }
+        }
+
+        function renderCatalog(items) {
+            const div = document.getElementById('listings');
+            div.innerHTML = items.length === 0 ? '<p style="text-align:center;color:#999;">No items inside catalog matching requirements.</p>' : '';
+            items.forEach(item => {
+                div.innerHTML += `
+                    <div class="item-card">
+                        <h3>${item.title}</h3>
+                        <p><span class="badge">${item.category}</span> <b>Condition:</b> ${item.condition}</p>
+                        <p>${item.description}</p>
+                        <div class="meta-metrics">
+                            <span class="price">Rent: $${item.price}/mo</span>
+                            <span class="deposit">Deposit: $${item.securityDeposit}</span>
+                        </div>
+                        <p>⏱️ <b>Tenure:</b> ${item.tenureOptions} | 🚚 Delivery in: ${item.deliveryDays} Days</p>
+                        <button onclick="alert('Item successfully staged into cart matrix!')">Add to Cart 🛒</button>
+                    </div>
+                `;
+            });
+        }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderCatalog(cat === 'All' ? cachedItems : cachedItems.filter(i => i.category === cat));
+        }
+
+        // Form Event Submissions
+        document.getElementById('rentalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('title').value, category: document.getElementById('category').value,
+                condition: document.getElementById('condition').value, description: document.getElementById('description').value,
+                price: Number(document.getElementById('price').value), securityDeposit: Number(document.getElementById('securityDeposit').value),
+                tenureOptions: document.getElementById('tenureOptions').value, deliveryDays: Number(document.getElementById('deliveryDays').value),
+                contactEmail: document.getElementById('contactEmail').value, contactPhone: document.getElementById('contactPhone').value
+            };
+            await fetch('/api/properties', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            alert('Inventory entry recorded successfully!');
+            document.getElementById('rentalForm').reset();
+            fetchCatalog();
+        });
+
+        document.getElementById('supportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                itemName: document.getElementById('ticketItem').value,
+                issueDescription: document.getElementById('ticketIssue').value,
+                userContact: document.getElementById('ticketContact').value
+            };
+            await fetch('/api/maintenance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            alert('Support maintenance ticket submitted successfully!');
+            document.getElementById('supportForm').reset();
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = { username: document.getElementById('regName').value, email: document.getElementById('regEmail').value, password: document.getElementById('regPass').value };
+            await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            alert('Account Profile Registered successfully! 🎉');
+            document.getElementById('registerForm').reset();
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = { email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value };
+            const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const result = await res.json();
+            alert(result.message);
+            document.getElementById('loginForm').reset();
+        });
+
+        fetchCatalog();
+    </script>
+</body>
+</html>
