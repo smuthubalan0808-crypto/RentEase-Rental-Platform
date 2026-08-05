@@ -97,6 +97,7 @@
         .btn:hover { transform: translateY(-2px); }
         .btn-secondary { background: linear-gradient(90deg, #FF512F 0%, #DD2476 100%); }
         .btn-gps { background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%); margin-bottom: 1.2rem; }
+        .btn-guest { background: #34495e; color: #fff; margin-top: 1rem; box-shadow: 0 4px 12px rgba(52, 73, 94, 0.3); }
         .btn-back { background: #7f8c8d; width: auto; padding: 0.6rem 1.2rem; margin-right: 10px; }
 
         .catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
@@ -152,7 +153,7 @@
 
     <header>
         <div class="logo">RentEase</div>
-        <div id="userWelcomeBanner" style="font-weight: 600; font-size: 0.95rem;">Guest Mode</div>
+        <div id="userWelcomeBanner" style="font-weight: 600; font-size: 0.95rem;">👤 Guest Mode</div>
     </header>
 
     <div class="container">
@@ -166,7 +167,7 @@
             <div class="step-indicator" id="ind-5"><span class="step-number">5</span> Order & Tickets</div>
         </div>
 
-        <!-- STEP 1: Account Login / Register -->
+        <!-- STEP 1: Account Login / Register / Guest Mode -->
         <div class="step-page active-page" id="page-1">
             <div class="card" style="max-width: 480px; margin: 0 auto;">
                 <h2 style="text-align: center; margin-bottom: 1rem;">Step 1: Authentication</h2>
@@ -202,6 +203,13 @@
                     </div>
                     <button type="submit" class="btn">Register & Continue</button>
                 </form>
+
+                <div class="or-divider"><span>OR SKIP AUTHENTICATION</span></div>
+                
+                <!-- WORKING GUEST MODE BUTTON -->
+                <button type="button" class="btn btn-guest" onclick="continueAsGuest()">
+                    ⚡ Continue as Guest User
+                </button>
             </div>
         </div>
 
@@ -426,7 +434,6 @@
         let currentStep = 1;
         let selectedLocationStr = 'Browsing Mode';
 
-        // Complete All-India District Data Mapping
         const districtData = {
             "Tamil Nadu": ["Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupathur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar"],
             "Karnataka": ["Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir"],
@@ -438,18 +445,7 @@
             "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar (Noida)", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"],
             "West Bengal": ["Alipurduar", "Bankura", "Paschim Bardhaman", "Purba Bardhaman", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Medinipur", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
             "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"],
-            "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur"],
-            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali", "Bathinda", "Pathankot"],
-            "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Karnal", "Hisar", "Rohtak", "Panchkula"],
-            "Madhya Pradesh": ["Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Sagar", "Rewa"],
-            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Purnia", "Rohtas"],
-            "Odisha": ["Bhubaneswar", "Cuttack", "Ganjam", "Rourkela", "Puri", "Sambalpur"],
-            "Assam": ["Guwahati", "Dibrugarh", "Silchar", "Jorhat", "Nagaon"],
-            "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
-            "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba"],
-            "Uttarakhand": ["Dehradun", "Haridwar", "Nainital", "Haldwani"],
-            "Himachal Pradesh": ["Shimla", "Dharamshala", "Mandi", "Solan"],
-            "Goa": ["North Goa (Panaji)", "South Goa (Margao)"]
+            "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur"]
         };
 
         function goToStep(stepNumber) {
@@ -487,6 +483,13 @@
 
         function setCursorToStart(el) {
             if (el.value === '@gmail.com') setTimeout(() => { el.setSelectionRange(0, 0); }, 0);
+        }
+
+        // GUEST MODE FUNCTION
+        function continueAsGuest() {
+            document.getElementById('userWelcomeBanner').textContent = '👤 Guest Mode';
+            alert('Continuing as Guest User! Proceeding to Location step.');
+            goToStep(2);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
