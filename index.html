@@ -33,8 +33,9 @@
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
         }
-        .nav-icons { display: flex; gap: 15px; font-size: 1rem; cursor: pointer; color: #4a5568; align-items: center; }
+        .nav-icons { display: flex; gap: 12px; font-size: 1rem; cursor: pointer; color: #4a5568; align-items: center; }
         .admin-link-btn { background: #1e293b; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
+        .user-auth-btn { background: #0072ff; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
         .search-bar { position: relative; width: 100%; }
         .search-bar input { 
@@ -150,7 +151,7 @@
         .analytics-card h4 { font-size: 0.9rem; color: #64748b; margin-bottom: 0.2rem; }
         .analytics-card .value { font-size: 1.4rem; font-weight: 800; color: #0f172a; }
 
-        /* Modal Overlay */
+        /* Modals Common Style */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -159,11 +160,51 @@
             height: 100%;
             background: rgba(0,0,0,0.55);
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: center;
             z-index: 1000;
         }
         .modal-overlay.hidden { display: none; }
+
+        .modal-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .tab-buttons { display: flex; margin-bottom: 1.2rem; border-bottom: 2px solid #e2e8f0; }
+        .tab-btn { flex: 1; padding: 0.6rem; background: none; border: none; font-weight: bold; color: #64748b; cursor: pointer; }
+        .tab-btn.active { color: #0072ff; border-bottom: 3px solid #0072ff; }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        .btn-submit-auth {
+            width: 100%;
+            background: #0072ff;
+            color: #fff;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
 
         .location-modal {
             background: #ffffff;
@@ -174,10 +215,11 @@
             box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
             max-height: 90vh;
             overflow-y: auto;
+            align-self: flex-end;
         }
 
-        .modal-title { font-size: 1.6rem; font-weight: 800; color: #1e293b; margin-bottom: 0.2rem; }
-        .modal-sub { color: #64748b; font-size: 0.9rem; margin-bottom: 1.2rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin-bottom: 0.2rem; }
+        .modal-sub { color: #64748b; font-size: 0.85rem; margin-bottom: 1.2rem; }
 
         .or-divider {
             display: flex;
@@ -251,9 +293,7 @@
             </div>
             <div class="nav-icons">
                 <a href="#adminSection" class="admin-link-btn">Admin Portal</a>
-                <span>🤍</span>
-                <span>👤</span>
-                <span>🛒</span>
+                <button class="user-auth-btn" id="userLoginHeaderBtn" onclick="openAuthModal()">👤 Login / Register</button>
             </div>
         </div>
         <div class="search-bar">
@@ -319,13 +359,12 @@
             <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
         </div>
 
-        <!-- ADMIN & VENDOR FEATURES SECTION (Matches Image Requirements) -->
+        <!-- ADMIN & VENDOR FEATURES SECTION -->
         <div class="admin-section" id="adminSection">
             <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Admin & Vendor Dashboard</h2>
             <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem;">Inventory Management, Rental Pricing, Delivery Logistics & Maintenance Requests</p>
             
             <div class="admin-grid">
-                <!-- Vendor Action 1: Inventory & Pricing Management -->
                 <div>
                     <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b;">1. Add & Manage Product Inventory</h3>
                     <form id="adminAddProductForm" onsubmit="handleAddProduct(event)">
@@ -356,7 +395,6 @@
                     </form>
                 </div>
 
-                <!-- Admin Action 2: Operational Analytics & Service Overview -->
                 <div>
                     <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b;">2. Logistics & Analytics Overview</h3>
                     
@@ -385,7 +423,48 @@
 
     </div>
 
-    <!-- Location Selection Modal Overlay -->
+    <!-- USER LOGIN / REGISTER MODAL -->
+    <div class="modal-overlay hidden" id="authModal">
+        <div class="modal-card">
+            <span class="close-modal-btn" onclick="closeAuthModal()">✕</span>
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="userLoginForm" class="auth-form active" onsubmit="handleUserLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" id="loginEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit-auth">Login to Account</button>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="userRegisterForm" class="auth-form" onsubmit="handleUserRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" id="regEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit-auth">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOCATION SELECTION MODAL -->
     <div class="modal-overlay hidden" id="locationModal">
         <div class="location-modal">
             <div class="modal-title">Choose location</div>
@@ -433,7 +512,7 @@
 
             <div class="or-divider"><span>OR</span></div>
 
-            <div class="option-box" onclick="closeModal('Logged In User')">
+            <div class="option-box" onclick="openAuthModalFromLoc()">
                 <div class="option-icon" style="background:#f0f9ff; color:#0284c7;">📍</div>
                 <div class="option-text">
                     <h4>Login if existing user</h4>
@@ -526,7 +605,80 @@
             renderProducts(filtered);
         }
 
-        // Vendor Addition Handler
+        /* User Login & Register Modal Logic */
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function openAuthModalFromLoc() {
+            closeModal();
+            openAuthModal();
+        }
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('userLoginForm');
+            const regForm = document.getElementById('userRegisterForm');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const regBtn = document.getElementById('registerTabBtn');
+
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                regForm.classList.remove('active');
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+            } else {
+                loginForm.classList.remove('active');
+                regForm.classList.add('active');
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+            }
+        }
+
+        function setCursorToStart(inputElement) {
+            if (inputElement.value === '@gmail.com') {
+                setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
+            }
+        }
+
+        function handleUserRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            let email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPassword').value;
+
+            if (!email.includes('@')) email += '@gmail.com';
+            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+
+            users.push({ name: name, email: email, password: pass });
+            localStorage.setItem('rentEaseUsers', JSON.stringify(users));
+
+            alert('Account created for ' + name + '! You are now logged in.');
+            document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + name;
+            closeAuthModal();
+        }
+
+        function handleUserLogin(e) {
+            e.preventDefault();
+            let email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+
+            if (!email.includes('@')) email += '@gmail.com';
+            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+            let validUser = users.find(u => u.email === email && u.password === pass);
+
+            if (validUser) {
+                alert('Welcome back, ' + validUser.name + '!');
+                document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + validUser.name;
+                closeAuthModal();
+            } else {
+                alert('User not found or password incorrect! Please register first.');
+            }
+        }
+
         function handleAddProduct(e) {
             e.preventDefault();
             const name = document.getElementById('adminPName').value;
