@@ -151,12 +151,12 @@
                 
                 <div class="form-group">
                     <label for="regEmail">Email Address</label>
-                    <!-- type="text" allows username input without HTML5 validation errors -->
+                    <!-- Pre-filled with @gmail.com -->
                     <input 
                         type="text" 
                         id="regEmail" 
-                        placeholder="Enter username or email" 
-                        onblur="autoAppendDomain(this)" 
+                        value="@gmail.com" 
+                        onfocus="setCursorToStart(this)" 
                         required
                     >
                 </div>
@@ -207,11 +207,12 @@
     </div>
 
     <script>
-        // Appends @gmail.com if no domain exists
-        function autoAppendDomain(inputElement) {
-            let val = inputElement.value.trim();
-            if (val && !val.includes('@')) {
-                inputElement.value = val + '@gmail.com';
+        // Sets cursor position before @gmail.com when clicking the input
+        function setCursorToStart(inputElement) {
+            if (inputElement.value === '@gmail.com') {
+                setTimeout(() => {
+                    inputElement.setSelectionRange(0, 0);
+                }, 0);
             }
         }
 
@@ -219,12 +220,16 @@
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const emailInput = document.getElementById('regEmail');
-            autoAppendDomain(emailInput); // Final check on submission
+            let emailValue = document.getElementById('regEmail').value.trim();
+
+            // Ensure proper formatting before sending
+            if (!emailValue.includes('@')) {
+                emailValue = emailValue + '@gmail.com';
+            }
 
             const formData = {
                 name: document.getElementById('regName').value,
-                email: emailInput.value,
+                email: emailValue,
                 password: document.getElementById('regPassword').value
             };
 
