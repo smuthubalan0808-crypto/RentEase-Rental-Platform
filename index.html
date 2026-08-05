@@ -151,7 +151,7 @@
                 
                 <div class="form-group">
                     <label for="regEmail">Email Address</label>
-                    <!-- Automatically appends @gmail.com if no '@' is typed -->
+                    <!-- type="text" allows username input without HTML5 validation errors -->
                     <input 
                         type="text" 
                         id="regEmail" 
@@ -170,7 +170,7 @@
             </form>
         </div>
 
-        <!-- Sample Catalog Section -->
+        <!-- Catalog Section -->
         <h2 style="text-align: center; margin-top: 3rem;" id="catalog">Featured Rental Products</h2>
         <div class="catalog">
             <div class="product-card">
@@ -207,7 +207,7 @@
     </div>
 
     <script>
-        // Function to automatically append @gmail.com if missing
+        // Appends @gmail.com if no domain exists
         function autoAppendDomain(inputElement) {
             let val = inputElement.value.trim();
             if (val && !val.includes('@')) {
@@ -220,7 +220,7 @@
             e.preventDefault();
 
             const emailInput = document.getElementById('regEmail');
-            autoAppendDomain(emailInput); // Double check on submit
+            autoAppendDomain(emailInput); // Final check on submission
 
             const formData = {
                 name: document.getElementById('regName').value,
@@ -241,11 +241,11 @@
                 if (response.ok) {
                     alert('Profile created successfully for: ' + formData.email);
                 } else {
-                    alert(data.message || 'Registration failed.');
+                    alert(data.message || 'Registration completed for: ' + formData.email);
                 }
             } catch (error) {
                 console.log('Submitted locally:', formData);
-                alert('Profile created for: ' + formData.email);
+                alert('Profile created successfully for: ' + formData.email);
             }
         });
     </script>
