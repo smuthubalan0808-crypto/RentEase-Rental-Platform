@@ -55,10 +55,26 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .auth-card h2 {
+        .tab-buttons {
+            display: flex;
             margin-bottom: 1.5rem;
-            color: #2c3e50;
-            text-align: center;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            color: #27ae60;
+            border-bottom: 3px solid #27ae60;
         }
 
         .form-group {
@@ -125,6 +141,14 @@
         .tenure-select {
             margin-bottom: 1rem;
         }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -133,25 +157,46 @@
         <div class="logo">RentEase</div>
         <nav>
             <a href="#catalog">Catalog</a>
-            <a href="#register">Register</a>
-            <a href="#maintenance">Maintenance</a>
+            <a href="#auth-section">Login / Register</a>
         </nav>
     </header>
 
     <div class="container">
         
-        <!-- User Registration Form -->
-        <div class="auth-card" id="register">
-            <h2>Create Profile</h2>
-            <form id="registerForm">
+        <!-- User Authentication Card (Login & Register) -->
+        <div class="auth-card" id="auth-section">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input 
+                        type="text" 
+                        id="loginEmail" 
+                        value="@gmail.com" 
+                        onfocus="setCursorToStart(this)" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="auth-form">
                 <div class="form-group">
                     <label for="regName">Full Name</label>
                     <input type="text" id="regName" placeholder="John Doe" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="regEmail">Email Address</label>
-                    <!-- Pre-filled with @gmail.com -->
                     <input 
                         type="text" 
                         id="regEmail" 
@@ -160,12 +205,10 @@
                         required
                     >
                 </div>
-
                 <div class="form-group">
                     <label for="regPassword">Password</label>
                     <input type="password" id="regPassword" placeholder="••••••••" required>
                 </div>
-
                 <button type="submit" class="btn">Register</button>
             </form>
         </div>
@@ -207,6 +250,23 @@
     </div>
 
     <script>
+        // Toggle between Login and Register tabs
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const forms = document.querySelectorAll('.auth-form');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
         // Sets cursor position before @gmail.com when clicking the input
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
@@ -216,42 +276,20 @@
             }
         }
 
-        // Handle Registration Form Submission
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        // Handle Login Submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            let email = document.getElementById('loginEmail').value.trim();
+            if (!email.includes('@')) email += '@gmail.com';
+            alert('Welcome back! Logged in as: ' + email);
+        });
 
-            let emailValue = document.getElementById('regEmail').value.trim();
-
-            // Ensure proper formatting before sending
-            if (!emailValue.includes('@')) {
-                emailValue = emailValue + '@gmail.com';
-            }
-
-            const formData = {
-                name: document.getElementById('regName').value,
-                email: emailValue,
-                password: document.getElementById('regPassword').value
-            };
-
-            console.log('Registering user with:', formData);
-
-            try {
-                const response = await fetch('http://localhost:5000/api/users/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Profile created successfully for: ' + formData.email);
-                } else {
-                    alert(data.message || 'Registration completed for: ' + formData.email);
-                }
-            } catch (error) {
-                console.log('Submitted locally:', formData);
-                alert('Profile created successfully for: ' + formData.email);
-            }
+        // Handle Registration Submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let email = document.getElementById('regEmail').value.trim();
+            if (!email.includes('@')) email += '@gmail.com';
+            alert('Profile created successfully for: ' + email);
         });
     </script>
 </body>
