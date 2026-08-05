@@ -134,6 +134,17 @@
         .add-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none; padding: 0.6rem; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
         .add-btn:hover { opacity: 0.9; }
 
+        /* Maintenance Section Container */
+        .maintenance-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .ticket-tracker { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 1.5rem; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .ticket-tracker h3 { color: #0f172a; font-weight: 900; font-size: 1.15rem; margin-bottom: 0.3rem; }
+
         /* Admin & Vendor Section */
         .admin-section {
             background: rgba(255, 255, 255, 0.95);
@@ -156,7 +167,7 @@
             outline: none;
             background: #f8fafc;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #4f46e5; background: #fff; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #4f46e5; background: #fff; }
 
         .btn-admin {
             background: #1e293b;
@@ -311,12 +322,10 @@
             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         }
 
-        .ticket-tracker { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 1.5rem; margin-top: 2rem; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
-        .ticket-tracker h3 { color: #0f172a; font-weight: 900; }
-
         @media (max-width: 768px) {
             .grid-categories { grid-template-columns: repeat(3, 1fr); }
             .admin-grid { grid-template-columns: 1fr; }
+            .maintenance-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -386,14 +395,35 @@
             <!-- Dynamic Items Auto Loaded Below -->
         </div>
 
-        <!-- Service Ticket Tracker -->
-        <div class="ticket-tracker">
-            <h3>Service Ticket & Maintenance Lookup</h3>
-            <div style="display: flex; gap: 8px; margin-top: 0.8rem;">
-                <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.7rem; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none;">
-                <button onclick="searchTicket()" style="padding: 0.7rem 1.2rem; background: #4f46e5; color: #fff; border:none; border-radius: 8px; font-weight: bold; cursor: pointer;">Check Status</button>
+        <!-- Maintenance Container (Raise Ticket & Lookup Side-by-Side) -->
+        <div class="maintenance-container">
+            <!-- Raise Maintenance Request Form -->
+            <div class="ticket-tracker">
+                <h3>Raise Maintenance Report</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.8rem;">Report issues with your rented item for quick service.</p>
+                <form id="raiseMaintenanceForm" onsubmit="handleRaiseMaintenance(event)">
+                    <div class="form-group" style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.8rem;">Item Name / ID</label>
+                        <input type="text" id="maintItemName" placeholder="e.g. Double Door Refrigerator" required style="padding:0.5rem; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.8rem;">Issue Description</label>
+                        <textarea id="maintDesc" placeholder="Describe the issue (e.g. Cooling issue)" rows="2" required style="padding:0.5rem; font-size:0.85rem; width:100%; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; outline:none;"></textarea>
+                    </div>
+                    <button type="submit" style="width:100%; padding:0.6rem; background:linear-gradient(135deg, #4f46e5, #7c3aed); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.85rem;">Submit Report</button>
+                </form>
             </div>
-            <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
+
+            <!-- Service Ticket & Maintenance Lookup -->
+            <div class="ticket-tracker">
+                <h3>Service Ticket Lookup</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.8rem;">Check status of your reported maintenance ticket.</p>
+                <div style="display: flex; gap: 8px; margin-top: 0.4rem;">
+                    <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.5rem; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none; font-size:0.85rem;">
+                    <button onclick="searchTicket()" style="padding: 0.5rem 0.9rem; background: #4f46e5; color: #fff; border:none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size:0.85rem;">Check</button>
+                </div>
+                <div id="ticketResultArea" style="margin-top: 0.6rem;"></div>
+            </div>
         </div>
 
         <!-- ADMIN & VENDOR FEATURES SECTION -->
@@ -862,7 +892,6 @@
             const fullLoc = parts.join(', ');
             closeModal(fullLoc);
             
-            // Open Secure Payment Gateway modal after location is set
             document.getElementById('payLocDisplay').textContent = fullLoc;
             document.getElementById('paymentModal').classList.remove('hidden');
         }
@@ -915,19 +944,38 @@
             } else { alert("Geolocation not supported by browser."); }
         }
 
+        function handleRaiseMaintenance(e) {
+            e.preventDefault();
+            const itemName = document.getElementById('maintItemName').value;
+            const desc = document.getElementById('maintDesc').value;
+            const randomId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+            tickets.push({ id: randomId, response: `Issue reported for ${itemName}: "${desc}". Technician assigned for inspection.` });
+            localStorage.setItem('rentEaseTickets', JSON.stringify(tickets));
+
+            alert(`Maintenance Report Submitted Successfully!\nYour Ticket ID is: ${randomId}\nUse this ID in the lookup box to check status.`);
+            document.getElementById('raiseMaintenanceForm').reset();
+            document.getElementById('checkTicketId').value = randomId;
+            searchTicket();
+        }
+
         function searchTicket() {
             const id = document.getElementById('checkTicketId').value.trim().toUpperCase();
-            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [
+                { id: 'TKT-1001', response: 'Technician scheduled for inspection tomorrow at 10 AM.' }
+            ];
             let found = tickets.find(t => t.id === id);
             const result = document.getElementById('ticketResultArea');
             if (found) {
-                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #059669; font-size:0.9rem;">
-                    <p style="color:#047857;"><strong>✔ Responded</strong> (${found.id})</p>
-                    <p><strong>Response:</strong> ${found.response}</p>
+                result.innerHTML = `<div style="background:#ecfdf5; padding:0.7rem; border-radius:6px; border-left:4px solid #059669; font-size:0.85rem;">
+                    <p style="color:#047857; font-weight:bold;">✔ Ticket Found (${found.id})</p>
+                    <p style="color:#1e293b; margin-top:2px;">${found.response}</p>
                 </div>`;
             } else {
-                result.innerHTML = `<div style="background:#fef2f2; padding:0.8rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.9rem;">
-                    <p style="color:#b91c1c;">✖ Ticket ID Not Found (e.g. try TKT-1001 or add via Admin)</p>
+                result.innerHTML = `<div style="background:#fef2f2; padding:0.7rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.85rem;">
+                    <p style="color:#b91c1c; font-weight:bold;">✖ Ticket ID Not Found</p>
+                    <p style="color:#475569; margin-top:2px;">Try raising a new report using the form on the left or use sample ID: TKT-1001</p>
                 </div>`;
             }
         }
