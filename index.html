@@ -218,7 +218,6 @@
     </div>
 
     <script>
-        // Tab Switching Functionality
         function switchTab(tab) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -238,14 +237,12 @@
             }
         }
 
-        // Auto-cursor positioning for @gmail.com
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
             }
         }
 
-        // Handle Registration and Login Submissions
         document.addEventListener('DOMContentLoaded', function () {
             const regForm = document.getElementById('registerForm');
             const loginForm = document.getElementById('loginForm');
@@ -267,16 +264,13 @@
                         return;
                     }
 
-                    if (!email.includes('@')) {
-                        email = email + '@gmail.com';
-                    }
+                    if (!email.includes('@')) email = email + '@gmail.com';
 
-                    // Save user locally
                     let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
                     let existingUser = users.find(u => u.email === email);
 
                     if (existingUser) {
-                        alert('User ' + email + ' is already registered! Switching to login form.');
+                        alert('User ' + email + ' is already registered! Please log in.');
                         switchTab('login');
                         return;
                     }
@@ -284,10 +278,8 @@
                     users.push({ name: name, email: email, password: password });
                     localStorage.setItem('rentEaseUsers', JSON.stringify(users));
 
-                    // Alert on success
                     alert('Success! Profile created for ' + name + ' (' + email + '). You can now log in.');
 
-                    // Reset inputs and move to login
                     if (emailInput) emailInput.value = '@gmail.com';
                     if (passInput) passInput.value = '';
                     switchTab('login');
@@ -311,6 +303,14 @@
 
                     if (validUser) {
                         alert('Welcome back, ' + validUser.name + '! Logged in successfully.');
+                        
+                        // REPLACES LOGIN FORM WITH GREEN LOGGED IN CARD
+                        const authCard = document.getElementById('auth-section');
+                        if (authCard) {
+                            authCard.innerHTML = '<div style="text-align:center; padding: 1.5rem; background: #e8f8f5; border: 2px solid #27ae60; border-radius: 8px; color: #27ae60;"><h3>✔ Logged In as ' + validUser.name + ' (' + validUser.email + ')</h3><p style="color:#555; margin-top:5px;">Select products below to start renting.</p></div>';
+                        }
+
+                        window.location.hash = '#catalog';
                     } else {
                         alert('Account not found or password incorrect! Please register first.');
                     }
