@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentEase - RentoMojo Style Rental Platform</title>
+    <title>RentEase - Worldwide Furniture & Appliance Rental Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%); color: #2c3e50; line-height: 1.6; min-height: 100vh; }
@@ -17,9 +17,10 @@
             align-items: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             flex-wrap: wrap;
+            gap: 10px;
         }
         .logo { font-size: 1.8rem; font-weight: 800; color: #00d2ff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .city-picker { background: #ffffff; color: #1e3c72; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .city-picker { background: #ffffff; color: #1e3c72; border: none; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; cursor: pointer; outline: none; }
         nav a { color: #ffffff; text-decoration: none; margin-left: 15px; font-weight: 600; transition: color 0.3s; }
         nav a:hover { color: #00d2ff; }
 
@@ -98,14 +99,27 @@
     <header>
         <div class="logo">RentEase</div>
         <div>
-            <span>📍 Location: </span>
+            <span>🌐 Global Location: </span>
             <select class="city-picker" id="citySelect" onchange="updateCity(this.value)">
-                <option>Bangalore</option>
-                <option>Mumbai</option>
-                <option>Delhi NCR</option>
-                <option>Hyderabad</option>
-                <option>Chennai</option>
-                <option>Pune</option>
+                <optgroup label="Asia-Pacific">
+                    <option>Bangalore, India</option>
+                    <option>Mumbai, India</option>
+                    <option>Delhi NCR, India</option>
+                    <option>Singapore</option>
+                    <option>Tokyo, Japan</option>
+                    <option>Sydney, Australia</option>
+                    <option>Dubai, UAE</option>
+                </optgroup>
+                <optgroup label="North America">
+                    <option>New York, USA</option>
+                    <option>San Francisco, USA</option>
+                    <option>Toronto, Canada</option>
+                </optgroup>
+                <optgroup label="Europe">
+                    <option>London, UK</option>
+                    <option>Berlin, Germany</option>
+                    <option>Paris, France</option>
+                </optgroup>
             </select>
         </div>
         <nav>
@@ -157,7 +171,7 @@
         </div>
 
         <!-- Catalog Section -->
-        <h2 class="section-title" id="catalog">RentoMojo-Style Rental Collection</h2>
+        <h2 class="section-title" id="catalog">Worldwide Luxury Rental Collection</h2>
         <div class="catalog">
             
             <div class="product-card">
@@ -242,7 +256,7 @@
 
         </div>
 
-        <!-- RentoMojo Checkout & Verification (KYC) Section -->
+        <!-- Checkout & Verification (KYC) Section -->
         <div class="card" id="checkout" style="margin-top: 2rem; border-top-color: #38ef7d;">
             <h2 style="color: #11998e; margin-bottom: 1rem;">Checkout & Identity Verification (KYC)</h2>
             <form id="checkoutForm" onsubmit="handleCheckout(event)">
@@ -252,15 +266,15 @@
                         <input type="text" id="selectedItem" value="Royal Velvet Chesterfield Sofa" readonly style="background: #f8f9fa;">
                     </div>
                     <div class="form-group">
-                        <label>Delivery City & Address</label>
-                        <input type="text" id="deliveryAddress" placeholder="Apartment / Flat / Street name" required>
+                        <label>Delivery Address & Country</label>
+                        <input type="text" id="deliveryAddress" placeholder="Street Address, City, Country" required>
                     </div>
                     <div class="form-group">
                         <label>Delivery Date</label>
                         <input type="date" required>
                     </div>
                     <div class="form-group">
-                        <label>KYC Proof (Aadhaar / Work ID)</label>
+                        <label>Global ID / Passport / Driving License</label>
                         <input type="file" accept="image/*,.pdf" required>
                     </div>
                 </div>
@@ -268,16 +282,16 @@
             </form>
         </div>
 
-        <!-- Maintenance & Free Relocation Support Section -->
+        <!-- Maintenance & Global Relocation Support Section -->
         <div class="card" id="services" style="border-top-color: #DD2476;">
-            <h2 style="color: #DD2476; margin-bottom: 1rem;">RentoMojo Care: Free Maintenance & Relocation</h2>
+            <h2 style="color: #DD2476; margin-bottom: 1rem;">Worldwide Care: Free Maintenance & International Relocation</h2>
             <form id="serviceForm" onsubmit="handleService(event)">
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Service Type</label>
                         <select id="serviceType">
                             <option>Free Maintenance / Repair Request</option>
-                            <option>Free City Relocation Request</option>
+                            <option>Cross-Border / Inter-City Relocation Request</option>
                             <option>Tenure Extension Request</option>
                             <option>Rent-to-Own Buyout Request</option>
                         </select>
@@ -289,7 +303,7 @@
                 </div>
                 <div class="form-group">
                     <label>Details / Description</label>
-                    <textarea rows="3" placeholder="Specify maintenance issue or new relocation address..." required></textarea>
+                    <textarea rows="3" placeholder="Specify maintenance issue or new global relocation address..." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-secondary">Submit Service Ticket</button>
             </form>
@@ -297,14 +311,14 @@
 
         <!-- Admin & Inventory Dashboard Section -->
         <div class="card" id="admin" style="border-top-color: #FF8008;">
-            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & Inventory Management</h2>
+            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & Global Inventory Management</h2>
             <div class="grid-2">
                 <div>
                     <h3>Add Inventory Item</h3>
                     <form id="adminInventoryForm" onsubmit="handleAddInventory(event)" style="margin-top: 1rem;">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" placeholder="e.g. Smart LED TV" required>
+                            <input type="text" placeholder="e.g. Smart OLED TV" required>
                         </div>
                         <div class="form-group">
                             <label>Category</label>
@@ -322,12 +336,12 @@
                     </form>
                 </div>
                 <div>
-                    <h3>Operations Analytics</h3>
+                    <h3>Global Operations Analytics</h3>
                     <div style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); padding: 1.2rem; border-radius: 8px; margin-top: 1rem; color: #2c3e50; font-weight: 600;">
-                        <p><strong>Active Subscriptions:</strong> 124 units</p>
+                        <p><strong>Active Worldwide Subscriptions:</strong> 124 units</p>
                         <p><strong>Monthly Recurring Revenue:</strong> ₹98,500</p>
-                        <p><strong>Verified KYC Accounts:</strong> 98 users</p>
-                        <p><strong>Refurbishment & Quality Score:</strong> 99.2%</p>
+                        <p><strong>Verified Global Accounts:</strong> 98 users</p>
+                        <p><strong>Service Network Coverage:</strong> 12 Hubs Worldwide</p>
                     </div>
                 </div>
             </div>
@@ -362,7 +376,7 @@
         }
 
         function updateCity(city) {
-            alert('Location updated to: ' + city + '. Showing availability for ' + city + '.');
+            alert('Global location updated to: ' + city + '. Fetching inventory for this region.');
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -447,7 +461,7 @@
 
         function handleCheckout(e) {
             e.preventDefault();
-            alert('KYC Document uploaded and order placed successfully! Delivery scheduled.');
+            alert('KYC Document uploaded and order placed successfully! International/Local delivery scheduled.');
         }
 
         function handleService(e) {
