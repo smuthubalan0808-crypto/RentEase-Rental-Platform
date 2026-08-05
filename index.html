@@ -50,7 +50,7 @@
         .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
         /* Container */
-        .container { max-width: 1000px; margin: 0 auto; padding: 1.2rem; }
+        .container { max-width: 1050px; margin: 0 auto; padding: 1.2rem; }
 
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0 1rem 0; }
         .section-title { font-size: 1.25rem; font-weight: 800; color: #1e293b; }
@@ -59,13 +59,13 @@
         /* Category Grid */
         .grid-categories { 
             display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 12px; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 10px; 
             text-align: center;
         }
         .cat-item { 
             background: #fff; 
-            padding: 0.8rem 0.4rem; 
+            padding: 0.6rem 0.3rem; 
             border-radius: 12px; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
             cursor: pointer;
@@ -74,8 +74,8 @@
         }
         .cat-item:hover { transform: translateY(-3px); border-color: #0072ff; }
         .cat-item.active-cat { border-color: #0072ff; background: #f0f7ff; }
-        .cat-img { width: 100%; height: 75px; object-fit: cover; border-radius: 8px; margin-bottom: 0.4rem; }
-        .cat-title { font-size: 0.78rem; font-weight: 700; color: #334155; }
+        .cat-img { width: 100%; height: 60px; object-fit: cover; border-radius: 6px; margin-bottom: 0.3rem; }
+        .cat-title { font-size: 0.72rem; font-weight: 700; color: #334155; }
 
         /* Banner */
         .banner-card { 
@@ -100,9 +100,9 @@
         }
 
         /* Products Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
         .product-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
-        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background-color: #f1f5f9; }
+        .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; background-color: #f1f5f9; }
         .product-category-tag { font-size: 0.75rem; font-weight: 700; color: #0072ff; text-transform: uppercase; margin-top: 0.5rem; }
         .product-name { font-size: 0.95rem; font-weight: 700; margin: 0.2rem 0; color: #1e293b; }
         .product-price { font-size: 1.1rem; font-weight: 800; color: #10b981; }
@@ -278,7 +278,7 @@
         .ticket-tracker { background: #fff; border-radius: 12px; padding: 1rem; margin-top: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
         @media (max-width: 768px) {
-            .grid-categories { grid-template-columns: repeat(3, 1fr); }
+            .grid-categories { grid-template-columns: repeat(4, 1fr); }
             .admin-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -310,7 +310,7 @@
             <button class="reset-filter-btn" id="resetBtn" onclick="filterCategory('all')">Show All Products</button>
         </div>
 
-        <!-- Interactive Category Grid -->
+        <!-- Interactive Category Grid (Now includes TVs and Washing Machines) -->
         <div class="grid-categories">
             <div class="cat-item" id="cat-Packages" onclick="filterCategory('Packages')">
                 <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Packages">
@@ -319,6 +319,14 @@
             <div class="cat-item" id="cat-Refrigerators" onclick="filterCategory('Refrigerators')">
                 <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Refrigerators">
                 <div class="cat-title">Refrigerators</div>
+            </div>
+            <div class="cat-item" id="cat-TVs" onclick="filterCategory('TVs')">
+                <img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Smart TVs">
+                <div class="cat-title">Smart TVs</div>
+            </div>
+            <div class="cat-item" id="cat-Washing Machines" onclick="filterCategory('Washing Machines')">
+                <img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Washing Machines">
+                <div class="cat-title">Washing Machines</div>
             </div>
             <div class="cat-item" id="cat-Beds" onclick="filterCategory('Beds')">
                 <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Beds">
@@ -370,17 +378,18 @@
                     <form id="adminAddProductForm" onsubmit="handleAddProduct(event)">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" id="adminPName" placeholder="e.g. Washing Machine / Smart LED TV" required>
+                            <input type="text" id="adminPName" placeholder="e.g. 55 inch Smart TV / Washing Machine" required>
                         </div>
                         <div class="form-group">
                             <label>Category</label>
                             <select id="adminPCat" required>
-                                <option value="Furniture">Furniture</option>
-                                <option value="Appliances">Appliances</option>
-                                <option value="Sofas">Sofas</option>
+                                <option value="TVs">TVs</option>
+                                <option value="Washing Machines">Washing Machines</option>
                                 <option value="Refrigerators">Refrigerators</option>
+                                <option value="Sofas">Sofas</option>
                                 <option value="Beds">Beds</option>
                                 <option value="Dining Sets">Dining Sets</option>
+                                <option value="Packages">Packages</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -527,17 +536,20 @@
     </div>
 
     <script>
+        // Updated product list including TVs and Washing Machines natively
         const products = [
             { id: 1, name: "Royal Velvet Chesterfield Sofa", category: "Sofas", price: "399", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=500&q=80" },
             { id: 2, name: "French Door Smart Refrigerator", category: "Refrigerators", price: "499", img: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=500&q=80" },
-            { id: 3, name: "Imperial Solid Wood Dining Set", category: "Dining Sets", price: "349", img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=500&q=80" },
-            { id: 4, name: "Royal Teak Wood King Bed", category: "Beds", price: "399", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=500&q=80" },
-            { id: 5, name: "Full Studio Apartment Package", category: "Packages", price: "999", img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=500&q=80" },
-            { id: 6, name: "Double Door Frost-Free Refrigerator", category: "Refrigerators", price: "349", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
-            { id: 7, name: "Modern L-Shaped Fabric Sofa", category: "Sofas", price: "449", img: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=500&q=80" },
-            { id: 8, name: "Queen Storage Bed with Mattress", category: "Beds", price: "299", img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=500&q=80" },
-            { id: 9, name: "4-Seater Compact Wooden Dining Table", category: "Dining Sets", price: "249", img: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=500&q=80" },
-            { id: 10, name: "2BHK Complete Home Furnishing Combo", category: "Packages", price: "1,299", img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80" }
+            { id: 3, name: "43 inch 4K Ultra HD Smart LED TV", category: "TVs", price: "349", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=500&q=80" },
+            { id: 4, name: "Fully Automatic Front Load Washing Machine", category: "Washing Machines", price: "399", img: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
+            { id: 5, name: "Imperial Solid Wood Dining Set", category: "Dining Sets", price: "349", img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=500&q=80" },
+            { id: 6, name: "Royal Teak Wood King Bed", category: "Beds", price: "399", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=500&q=80" },
+            { id: 7, name: "Full Studio Apartment Package", category: "Packages", price: "999", img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=500&q=80" },
+            { id: 8, name: "Double Door Frost-Free Refrigerator", category: "Refrigerators", price: "349", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 9, name: "Modern L-Shaped Fabric Sofa", category: "Sofas", price: "449", img: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=500&q=80" },
+            { id: 10, name: "Queen Storage Bed with Mattress", category: "Beds", price: "299", img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=500&q=80" },
+            { id: 11, name: "4-Seater Compact Wooden Dining Table", category: "Dining Sets", price: "249", img: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=500&q=80" },
+            { id: 12, name: "2BHK Complete Home Furnishing Combo", category: "Packages", price: "1,299", img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80" }
         ];
 
         // Comprehensive database covering all States and Union Territories of India with major districts
@@ -580,7 +592,6 @@
             "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"]
         };
 
-        // Populate State dropdown dynamically on load
         function initStates() {
             const stateSelect = document.getElementById('stateSelect');
             for (let state in districtData) {
@@ -633,7 +644,7 @@
                 title.textContent = 'Showing ' + catName + ' Collection';
                 resetBtn.style.display = 'inline-block';
                 
-                let targetId = 'cat-' + catName.replace(' Sets', '');
+                let targetId = 'cat-' + catName;
                 let targetEl = document.getElementById(targetId);
                 if (targetEl) targetEl.classList.add('active-cat');
 
@@ -729,8 +740,10 @@
             const price = document.getElementById('adminPPrice').value;
 
             const categoryImageMap = {
+                "TVs": "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=500&q=80",
+                "Washing Machines": "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80",
+                "Refrigerators": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=500&q=80",
                 "Sofas": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=500&q=80",
-                "Refrigerators": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80",
                 "Beds": "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=500&q=80",
                 "Dining Sets": "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=500&q=80",
                 "Packages": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80"
