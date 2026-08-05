@@ -37,7 +37,6 @@
             font-weight: bold;
             font-size: 0.9rem;
             color: #a0aec0;
-            position: relative;
         }
         .step-indicator.active { color: #0072ff; }
         .step-indicator.completed { color: #27ae60; }
@@ -55,7 +54,6 @@
         .step-indicator.active .step-number { background: #0072ff; color: #fff; }
         .step-indicator.completed .step-number { background: #27ae60; color: #fff; }
 
-        /* Multi-Step Pages */
         .step-page { display: none; }
         .step-page.active-page { display: block; }
 
@@ -119,6 +117,61 @@
         .auth-form.active { display: block; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
+        /* Location Selection Card */
+        .location-selection-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.8rem;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        .location-title { font-size: 1.6rem; font-weight: 800; color: #2c3e50; margin-bottom: 0.2rem; }
+        .location-sub { color: #7f8c8d; font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin: 1.2rem 0;
+        }
+        .or-divider::before, .or-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .or-divider span { padding: 0 10px; }
+
+        .option-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+            margin-bottom: 0.8rem;
+        }
+        .option-box:hover { border-color: #0072ff; background: #f4f8ff; }
+        .option-icon {
+            width: 42px;
+            height: 42px;
+            background: #fdf2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-right: 1rem;
+        }
+        .option-text h4 { font-size: 1rem; color: #2c3e50; margin-bottom: 0.1rem; }
+        .option-text p { font-size: 0.82rem; color: #7f8c8d; line-height: 1.2; }
+        .arrow-icon { margin-left: auto; color: #b2bec3; font-weight: bold; }
+
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -179,16 +232,17 @@
             </div>
         </div>
 
-        <!-- STEP 2: Location Selection -->
+        <!-- STEP 2: Location Selection with GPS Tracker -->
         <div class="step-page" id="page-2">
-            <div class="card" style="max-width: 550px; margin: 0 auto;">
-                <h2>Step 2: Select Rental Location</h2>
-                <p style="color: #666; margin-bottom: 1.5rem;">Specify your Indian State and District for fast delivery.</p>
-                
-                <div class="form-group">
-                    <label>State / Union Territory</label>
-                    <select id="stateSelect" onchange="loadDistricts(this.value)" required>
-                        <option value="">-- Select State / UT --</option>
+            <div class="location-selection-card">
+                <h2 class="location-title">Choose location</h2>
+                <p class="location-sub">Please choose any of the below options to proceed.</p>
+
+                <!-- State & District Dropdowns -->
+                <div class="form-group" style="margin-bottom: 0.8rem;">
+                    <label>State / UT</label>
+                    <select id="stateSelect" onchange="loadDistricts(this.value)">
+                        <option value="">Select State</option>
                         <option value="Tamil Nadu">Tamil Nadu</option>
                         <option value="Karnataka">Karnataka</option>
                         <option value="Maharashtra">Maharashtra</option>
@@ -200,21 +254,60 @@
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0.8rem;">
                     <label>District</label>
-                    <select id="districtSelect" onchange="checkCustomDistrict()" required>
-                        <option value="">-- Select District --</option>
+                    <select id="districtSelect" onchange="checkCustomDistrict()">
+                        <option value="">Select District</option>
                     </select>
                 </div>
 
-                <div class="form-group" id="customDistrictGroup" style="display:none;">
-                    <label>Manual District Input</label>
-                    <input type="text" id="customDistrictInput" placeholder="Enter District Name">
+                <div class="form-group" id="customDistrictGroup" style="display:none; margin-bottom: 0.8rem;">
+                    <label>Manual District Name</label>
+                    <input type="text" id="customDistrictInput" placeholder="Type your district">
                 </div>
 
-                <div style="display:flex; justify-content: space-between; margin-top: 1.5rem;">
-                    <button class="btn btn-back" onclick="goToStep(1)">← Back</button>
-                    <button class="btn" style="width: auto;" onclick="confirmLocationNext()">Proceed to Catalog →</button>
+                <!-- Manual Street / Area Input -->
+                <div class="form-group" style="margin-bottom: 0.8rem;">
+                    <label>Enter area, street name</label>
+                    <input type="text" id="streetInput" placeholder="Type area or street name here">
+                </div>
+
+                <button class="btn" style="margin-bottom: 1rem;" onclick="confirmManualLocation()">Set Custom Location & Proceed</button>
+
+                <div class="or-divider"><span>OR</span></div>
+
+                <!-- GPS Fetch Option -->
+                <div class="option-box" onclick="fetchGPSLocation()">
+                    <div class="option-icon" style="background:#fdf2f2; color:#e74c3c;">🏠📍</div>
+                    <div class="option-text">
+                        <h4>Fetch my location</h4>
+                        <p id="gpsStatusText">Automatically fetch your current location via GPS.</p>
+                    </div>
+                    <div class="arrow-icon">›</div>
+                </div>
+
+                <div class="or-divider"><span>OR</span></div>
+
+                <!-- Existing User Login Route -->
+                <div class="option-box" onclick="goToStep(1)">
+                    <div class="option-icon" style="background:#eaf2f8; color:#2980b9;">🗺️</div>
+                    <div class="option-text">
+                        <h4>Login if existing user</h4>
+                        <p>Login now to select your saved default address.</p>
+                    </div>
+                    <div class="arrow-icon">›</div>
+                </div>
+
+                <div class="or-divider"><span>OR</span></div>
+
+                <!-- Just Browsing Option -->
+                <div class="option-box" onclick="setBrowsingLocation()">
+                    <div class="option-icon" style="background:#f4f6f7; color:#7f8c8d;">🪧</div>
+                    <div class="option-text">
+                        <h4>Just Browsing</h4>
+                        <p>Explore the full catalog without specifying a delivery location.</p>
+                    </div>
+                    <div class="arrow-icon">›</div>
                 </div>
             </div>
         </div>
@@ -223,7 +316,7 @@
         <div class="step-page" id="page-3">
             <div class="card">
                 <h2>Step 3: Choose Your Rental Items</h2>
-                <p style="color: #666; margin-bottom: 1rem;">Select an item from our premium rental collection.</p>
+                <p style="color: #666; margin-bottom: 1rem;">Browsing items for location: <strong id="currentLocDisplay" style="color:#0072ff;">All Locations</strong></p>
 
                 <div class="catalog">
                     <div class="product-card">
@@ -278,7 +371,7 @@
                             <input type="text" id="checkoutLocation" readonly style="background: #f8f9fa;">
                         </div>
                         <div class="form-group">
-                            <label>Street Address / Door No.</label>
+                            <label>Exact Delivery Address (Door No, Street)</label>
                             <input type="text" id="deliveryAddress" placeholder="e.g. Door 12B, Main St" required>
                         </div>
                         <div class="form-group">
@@ -359,8 +452,7 @@
 
     <script>
         let currentStep = 1;
-        let selectedStateVal = '';
-        let selectedDistrictVal = '';
+        let selectedLocationStr = 'Browsing Mode';
 
         const districtData = {
             "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
@@ -424,7 +516,7 @@
                 localStorage.setItem('rentEaseUsers', JSON.stringify(users));
 
                 document.getElementById('userWelcomeBanner').textContent = '👤 ' + name;
-                alert('Account Created! Moving to Location Step.');
+                alert('Account Created! Proceeding to Location step.');
                 goToStep(2);
             });
 
@@ -449,7 +541,7 @@
 
         function loadDistricts(selectedState) {
             const dropdown = document.getElementById('districtSelect');
-            dropdown.innerHTML = '<option value="">-- Select District --</option>';
+            dropdown.innerHTML = '<option value="">Select District</option>';
 
             if (selectedState && districtData[selectedState]) {
                 districtData[selectedState].forEach(d => {
@@ -471,21 +563,68 @@
             group.style.display = (dropdown.value === 'Other') ? 'block' : 'none';
         }
 
-        function confirmLocationNext() {
+        // Location Confirmation Logic
+        function confirmManualLocation() {
             const state = document.getElementById('stateSelect').value;
             const distSelect = document.getElementById('districtSelect').value;
             const customDist = document.getElementById('customDistrictInput').value.trim();
+            const street = document.getElementById('streetInput').value.trim();
 
             let finalDist = (distSelect === 'Other') ? customDist : distSelect;
 
-            if (!state || !finalDist) {
-                alert('Please select both State and District.');
+            let parts = [];
+            if (street) parts.push(street);
+            if (finalDist) parts.push(finalDist);
+            if (state) parts.push(state);
+
+            if (parts.length === 0) {
+                alert('Please enter at least a street name, district, or state.');
                 return;
             }
 
-            selectedStateVal = state;
-            selectedDistrictVal = finalDist;
-            document.getElementById('checkoutLocation').value = finalDist + ', ' + state + ', India';
+            selectedLocationStr = parts.join(', ');
+            updateLocationStateAndProceed(selectedLocationStr);
+        }
+
+        // GPS Fetch Location Functionality
+        function fetchGPSLocation() {
+            const gpsText = document.getElementById('gpsStatusText');
+
+            if ("geolocation" in navigator) {
+                gpsText.textContent = "Fetching GPS coordinates...";
+                gpsText.style.color = "#0072ff";
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lon = position.coords.longitude.toFixed(4);
+                        
+                        selectedLocationStr = `GPS Locality (${lat}° N, ${lon}° E), Tamil Nadu, India`;
+                        gpsText.textContent = "Location fetched successfully!";
+                        gpsText.style.color = "#27ae60";
+
+                        setTimeout(() => {
+                            updateLocationStateAndProceed(selectedLocationStr);
+                        }, 800);
+                    },
+                    function(error) {
+                        gpsText.textContent = "Unable to fetch GPS location. Please select manually above.";
+                        gpsText.style.color = "#e74c3c";
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        function setBrowsingLocation() {
+            selectedLocationStr = "General Catalog (Browsing Mode)";
+            updateLocationStateAndProceed(selectedLocationStr);
+        }
+
+        function updateLocationStateAndProceed(locStr) {
+            document.getElementById('currentLocDisplay').textContent = locStr;
+            document.getElementById('checkoutLocation').value = locStr;
             goToStep(3);
         }
 
