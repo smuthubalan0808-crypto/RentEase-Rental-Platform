@@ -95,6 +95,14 @@
         .auth-form.active { display: block; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
+        .ticket-status-card {
+            background: #f8f9fa;
+            border-left: 6px solid #3498db;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -154,7 +162,7 @@
         <nav>
             <a href="#catalog">Catalog</a>
             <a href="#checkout">Checkout & KYC</a>
-            <a href="#services">Maintenance</a>
+            <a href="#services">Maintenance & Tickets</a>
             <a href="#admin">Admin</a>
         </nav>
     </header>
@@ -324,36 +332,59 @@
             </form>
         </div>
 
-        <!-- Maintenance & Relocation Support Section -->
+        <!-- Maintenance, Relocation & Ticket Tracking Section -->
         <div class="card" id="services" style="border-top-color: #DD2476;">
-            <h2 style="color: #DD2476; margin-bottom: 1rem;">RentoMojo Care: Free Maintenance & Relocation</h2>
-            <form id="serviceForm" onsubmit="handleService(event)">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Service Type</label>
-                        <select id="serviceType">
-                            <option>Free Maintenance / Repair Request</option>
-                            <option>Inter-District / Inter-State Relocation</option>
-                            <option>Tenure Extension Request</option>
-                            <option>Rent-to-Own Buyout Request</option>
-                        </select>
+            <h2 style="color: #DD2476; margin-bottom: 1rem;">RentoMojo Care: Submit & Track Tickets</h2>
+            
+            <div class="grid-2">
+                <!-- Submit Ticket Form -->
+                <div>
+                    <h3>1. Submit Service Request</h3>
+                    <form id="serviceForm" onsubmit="handleService(event)" style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label>Service Type</label>
+                            <select id="serviceType">
+                                <option>Free Maintenance / Repair Request</option>
+                                <option>Inter-District / Inter-State Relocation</option>
+                                <option>Tenure Extension Request</option>
+                                <option>Rent-to-Own Buyout Request</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Scheduled Date</label>
+                            <input type="date" id="serviceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Details / Description</label>
+                            <textarea id="serviceDesc" rows="3" placeholder="Specify maintenance issue or new relocation address..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Submit Service Ticket</button>
+                    </form>
+                </div>
+
+                <!-- Check Ticket Status Form -->
+                <div>
+                    <h3>2. Check Ticket Status & Responses</h3>
+                    <div style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label>Enter Ticket ID (e.g. TKT-1001)</label>
+                            <input type="text" id="checkTicketId" placeholder="Enter TKT-XXXX ID">
+                        </div>
+                        <button class="btn" style="background: #34495e;" onclick="searchTicket()">Check Response Status</button>
                     </div>
-                    <div class="form-group">
-                        <label>Preferred Scheduled Date</label>
-                        <input type="date" required>
+
+                    <div id="ticketResultArea">
+                        <div class="ticket-status-card">
+                            <p style="color: #7f8c8d;">💡 Enter your Ticket ID above to check if our support team has responded to your request.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Details / Description</label>
-                    <textarea rows="3" placeholder="Specify maintenance issue or new relocation address..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-secondary">Submit Service Ticket</button>
-            </form>
+            </div>
         </div>
 
         <!-- Admin & Operations Dashboard Section -->
         <div class="card" id="admin" style="border-top-color: #FF8008;">
-            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & All-India Logistics Dashboard</h2>
+            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & Support Dashboard</h2>
             <div class="grid-2">
                 <div>
                     <h3>Add Inventory Item</h3>
@@ -378,12 +409,9 @@
                     </form>
                 </div>
                 <div>
-                    <h3>Operations Analytics</h3>
-                    <div style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); padding: 1.2rem; border-radius: 8px; margin-top: 1rem; color: #2c3e50; font-weight: 600;">
-                        <p><strong>Active Subscriptions:</strong> 124 units</p>
-                        <p><strong>Monthly Recurring Revenue:</strong> ₹98,500</p>
-                        <p><strong>All-India Coverage:</strong> 28 States, 8 UTs & All Districts</p>
-                        <p><strong>Delivery SLA:</strong> 24-48 Hours</p>
+                    <h3>Submitted Service Tickets (Admin View)</h3>
+                    <div id="adminTicketList" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem; max-height: 200px; overflow-y: auto;">
+                        <p style="color: #7f8c8d;">No customer tickets submitted yet.</p>
                     </div>
                 </div>
             </div>
@@ -400,10 +428,7 @@
             "Telangana": ["Adilabad", "Bhadradri Kothagudem", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalpally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Kumuram Bheem Asifabad", "Mahabubabad", "Mahbubnagar", "Mancherial", "Medak", "Medchal-Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal", "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Rangareddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad", "Wanaparthy", "Warangal", "Hanamkonda", "Yadadri Bhuvanagiri"],
             "Andhra Pradesh": ["Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Annamayya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kakinada", "Konaseema", "Kornool", "Nandyal", "NTR (Vijayawada)", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Srikakulam", "Sri Potti Sriramulu Nellore", "Sri Sathya Sai", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
             "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "Shahdara", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
-            "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar (Noida)", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"],
-            "West Bengal": ["Alipurduar", "Bankura", "Paschim Bardhaman", "Purba Bardhaman", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Medinipur", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
-            "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"],
-            "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur"]
+            "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar (Noida)", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"]
         };
 
         function loadDistricts(selectedState) {
@@ -487,6 +512,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            renderAdminTickets();
+
             const regForm = document.getElementById('registerForm');
             const loginForm = document.getElementById('loginForm');
 
@@ -576,9 +603,92 @@
             alert('KYC Document uploaded and order placed successfully!\n\nDelivery Location: ' + loc);
         }
 
+        // TICKET SUBMISSION & TRACKING SYSTEM
         function handleService(e) {
             e.preventDefault();
-            alert('Service ticket submitted. Support team will contact you within 24 hours.');
+            const type = document.getElementById('serviceType').value;
+            const date = document.getElementById('serviceDate').value;
+            const desc = document.getElementById('serviceDesc').value;
+
+            // Generate Unique Ticket ID
+            const ticketId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+
+            const newTicket = {
+                id: ticketId,
+                type: type,
+                date: date,
+                desc: desc,
+                status: 'Responded',
+                response: 'Your request has been approved! Our technician/logistics team will reach out to you on ' + date + '.'
+            };
+
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+            tickets.push(newTicket);
+            localStorage.setItem('rentEaseTickets', JSON.stringify(tickets));
+
+            alert('Service ticket submitted successfully!\n\nYour Ticket ID is: ' + ticketId + '\n\nKeep this Ticket ID to check the status.');
+
+            document.getElementById('serviceForm').reset();
+            renderAdminTickets();
+            
+            // Auto search the generated ticket
+            document.getElementById('checkTicketId').value = ticketId;
+            searchTicket();
+        }
+
+        function searchTicket() {
+            const inputId = document.getElementById('checkTicketId').value.trim().toUpperCase();
+            const resultArea = document.getElementById('ticketResultArea');
+
+            if (!inputId) {
+                alert('Please enter a Ticket ID.');
+                return;
+            }
+
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+            let foundTicket = tickets.find(t => t.id === inputId);
+
+            if (foundTicket) {
+                resultArea.innerHTML = `
+                    <div class="ticket-status-card" style="border-left-color: #27ae60; background: #e8f8f5;">
+                        <h4 style="color: #27ae60;">✔ Ticket Status: ${foundTicket.status}</h4>
+                        <p style="margin-top: 5px;"><strong>Ticket ID:</strong> ${foundTicket.id}</p>
+                        <p><strong>Request Type:</strong> ${foundTicket.type}</p>
+                        <p><strong>Scheduled Date:</strong> ${foundTicket.date}</p>
+                        <p><strong>Details:</strong> ${foundTicket.desc}</p>
+                        <hr style="margin: 8px 0; border: none; border-top: 1px solid #a3e4d7;">
+                        <p style="color: #1e8449;"><strong>💬 Support Team Response:</strong> "${foundTicket.response}"</p>
+                    </div>
+                `;
+            } else {
+                resultArea.innerHTML = `
+                    <div class="ticket-status-card" style="border-left-color: #e74c3c; background: #fadbd8;">
+                        <h4 style="color: #c0392b;">✖ Ticket Not Found</h4>
+                        <p style="color: #78281f; margin-top: 5px;">No ticket found with ID: <strong>${inputId}</strong>. Please check the Ticket ID and try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderAdminTickets() {
+            const adminList = document.getElementById('adminTicketList');
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+
+            if (tickets.length === 0) {
+                adminList.innerHTML = '<p style="color: #7f8c8d;">No customer tickets submitted yet.</p>';
+                return;
+            }
+
+            let html = '';
+            tickets.forEach(t => {
+                html += `
+                    <div style="background: #fff; padding: 0.8rem; border-radius: 6px; margin-bottom: 8px; border-left: 4px solid #27ae60;">
+                        <p><strong>${t.id}</strong> - ${t.type} (<span style="color:#27ae60;">${t.status}</span>)</p>
+                        <p style="font-size: 0.85rem; color: #555;">Scheduled: ${t.date}</p>
+                    </div>
+                `;
+            });
+            adminList.innerHTML = html;
         }
 
         function handleAddInventory(e) {
