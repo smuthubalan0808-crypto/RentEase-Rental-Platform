@@ -412,7 +412,6 @@
                     </div>
                     <button type="submit" style="width:100%; padding:0.6rem; background:linear-gradient(135deg, #4f46e5, #7c3aed); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.85rem;">Submit Report</button>
                 </form>
-                <!-- Live Display Box for Generated Ticket -->
                 <div id="generatedTicketDisplay" style="margin-top: 0.8rem; display: none;"></div>
             </div>
 
@@ -633,7 +632,6 @@
                 </div>
             </div>
 
-            <!-- Display box for Order/Transaction Ticket -->
             <div id="orderTicketDisplay" style="margin-top: 1rem; display: none;"></div>
 
             <button class="btn-submit-auth" id="payAuthBtn" onclick="completeSecureTransaction()" style="margin-top: 1rem;">Authorize & Pay Securely 🔒</button>
@@ -809,6 +807,7 @@
 
             users.push({ name: name, email: email, password: pass });
             localStorage.setItem('rentEaseUsers', JSON.stringify(users));
+            localStorage.setItem('rentEaseActiveUser', name);
 
             alert('Account created for ' + name + '! You are now logged in.');
             document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + name;
@@ -825,6 +824,7 @@
             let validUser = users.find(u => u.email === email && u.password === pass);
 
             if (validUser) {
+                localStorage.setItem('rentEaseActiveUser', validUser.name);
                 alert('Welcome back, ' + validUser.name + '!');
                 document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + validUser.name;
                 closeAuthModal();
@@ -1008,6 +1008,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             initStates();
             renderProducts(products);
+            
+            const activeUser = localStorage.getItem('rentEaseActiveUser');
+            if (activeUser) {
+                document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + activeUser;
+            }
         });
     </script>
 </body>
