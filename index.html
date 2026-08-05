@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentEase - Worldwide Furniture & Appliance Rental Platform</title>
+    <title>RentEase - India Furniture & Appliance Rental Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%); color: #2c3e50; line-height: 1.6; min-height: 100vh; }
@@ -20,7 +20,10 @@
             gap: 10px;
         }
         .logo { font-size: 1.8rem; font-weight: 800; color: #00d2ff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .city-picker { background: #ffffff; color: #1e3c72; border: none; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; cursor: pointer; outline: none; }
+        
+        .location-picker-container { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .location-picker { background: #ffffff; color: #1e3c72; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; cursor: pointer; outline: none; }
+        
         nav a { color: #ffffff; text-decoration: none; margin-left: 15px; font-weight: 600; transition: color 0.3s; }
         nav a:hover { color: #00d2ff; }
 
@@ -98,28 +101,53 @@
 
     <header>
         <div class="logo">RentEase</div>
-        <div>
-            <span>🌐 Global Location: </span>
-            <select class="city-picker" id="citySelect" onchange="updateCity(this.value)">
-                <optgroup label="Asia-Pacific">
-                    <option>Bangalore, India</option>
-                    <option>Mumbai, India</option>
-                    <option>Delhi NCR, India</option>
-                    <option>Singapore</option>
-                    <option>Tokyo, Japan</option>
-                    <option>Sydney, Australia</option>
-                    <option>Dubai, UAE</option>
-                </optgroup>
-                <optgroup label="North America">
-                    <option>New York, USA</option>
-                    <option>San Francisco, USA</option>
-                    <option>Toronto, Canada</option>
-                </optgroup>
-                <optgroup label="Europe">
-                    <option>London, UK</option>
-                    <option>Berlin, Germany</option>
-                    <option>Paris, France</option>
-                </optgroup>
+        <div class="location-picker-container">
+            <span>🇮🇳 State:</span>
+            <select class="location-picker" id="stateSelect" onchange="loadDistricts(this.value)">
+                <option value="">-- Select State / UT --</option>
+                <!-- 28 States -->
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <!-- 8 Union Territories -->
+                <option value="Andaman & Nicobar">Andaman & Nicobar</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra Nagar Haveli & Daman Diu">Dadra & Nagar Haveli</option>
+                <option value="Delhi">Delhi (NCT)</option>
+                <option value="Jammu & Kashmir">Jammu & Kashmir</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+            </select>
+
+            <span>District:</span>
+            <select class="location-picker" id="districtSelect" onchange="updateLocationBanner()">
+                <option value="">-- Select District --</option>
             </select>
         </div>
         <nav>
@@ -171,7 +199,7 @@
         </div>
 
         <!-- Catalog Section -->
-        <h2 class="section-title" id="catalog">Worldwide Luxury Rental Collection</h2>
+        <h2 class="section-title" id="catalog">Rental Collection</h2>
         <div class="catalog">
             
             <div class="product-card">
@@ -266,32 +294,45 @@
                         <input type="text" id="selectedItem" value="Royal Velvet Chesterfield Sofa" readonly style="background: #f8f9fa;">
                     </div>
                     <div class="form-group">
-                        <label>Delivery Address & Country</label>
-                        <input type="text" id="deliveryAddress" placeholder="Street Address, City, Country" required>
+                        <label>State & District</label>
+                        <input type="text" id="checkoutLocation" placeholder="Select State & District from Header" readonly style="background: #f8f9fa;">
+                    </div>
+                    <div class="form-group">
+                        <label>Exact Delivery Address (Pincode, Door No, Street)</label>
+                        <input type="text" id="deliveryAddress" placeholder="e.g. 12B, Main Road, Pincode 625001" required>
                     </div>
                     <div class="form-group">
                         <label>Delivery Date</label>
                         <input type="date" required>
                     </div>
                     <div class="form-group">
-                        <label>Global ID / Passport / Driving License</label>
+                        <label>Aadhaar / PAN / Voter ID (KYC Upload)</label>
                         <input type="file" accept="image/*,.pdf" required>
                     </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select>
+                            <option>UPI / Google Pay / PhonePe</option>
+                            <option>Credit / Debit Card</option>
+                            <option>Net Banking</option>
+                            <option>Cash on Delivery</option>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit" class="btn">Verify KYC & Complete Reservation</button>
+                <button type="submit" class="btn">Verify KYC & Confirm Order</button>
             </form>
         </div>
 
-        <!-- Maintenance & Global Relocation Support Section -->
+        <!-- Maintenance & Relocation Support Section -->
         <div class="card" id="services" style="border-top-color: #DD2476;">
-            <h2 style="color: #DD2476; margin-bottom: 1rem;">Worldwide Care: Free Maintenance & International Relocation</h2>
+            <h2 style="color: #DD2476; margin-bottom: 1rem;">RentoMojo Care: Free Maintenance & Relocation</h2>
             <form id="serviceForm" onsubmit="handleService(event)">
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Service Type</label>
                         <select id="serviceType">
                             <option>Free Maintenance / Repair Request</option>
-                            <option>Cross-Border / Inter-City Relocation Request</option>
+                            <option>Inter-District / Inter-State Relocation</option>
                             <option>Tenure Extension Request</option>
                             <option>Rent-to-Own Buyout Request</option>
                         </select>
@@ -303,22 +344,22 @@
                 </div>
                 <div class="form-group">
                     <label>Details / Description</label>
-                    <textarea rows="3" placeholder="Specify maintenance issue or new global relocation address..." required></textarea>
+                    <textarea rows="3" placeholder="Specify maintenance issue or new relocation address..." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-secondary">Submit Service Ticket</button>
             </form>
         </div>
 
-        <!-- Admin & Inventory Dashboard Section -->
+        <!-- Admin & Operations Dashboard Section -->
         <div class="card" id="admin" style="border-top-color: #FF8008;">
-            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & Global Inventory Management</h2>
+            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & All-India Logistics Dashboard</h2>
             <div class="grid-2">
                 <div>
                     <h3>Add Inventory Item</h3>
                     <form id="adminInventoryForm" onsubmit="handleAddInventory(event)" style="margin-top: 1rem;">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" placeholder="e.g. Smart OLED TV" required>
+                            <input type="text" placeholder="e.g. Smart LED TV" required>
                         </div>
                         <div class="form-group">
                             <label>Category</label>
@@ -336,12 +377,12 @@
                     </form>
                 </div>
                 <div>
-                    <h3>Global Operations Analytics</h3>
+                    <h3>Operations Analytics</h3>
                     <div style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); padding: 1.2rem; border-radius: 8px; margin-top: 1rem; color: #2c3e50; font-weight: 600;">
-                        <p><strong>Active Worldwide Subscriptions:</strong> 124 units</p>
+                        <p><strong>Active Subscriptions:</strong> 124 units</p>
                         <p><strong>Monthly Recurring Revenue:</strong> ₹98,500</p>
-                        <p><strong>Verified Global Accounts:</strong> 98 users</p>
-                        <p><strong>Service Network Coverage:</strong> 12 Hubs Worldwide</p>
+                        <p><strong>All-India Coverage:</strong> 28 States & 8 UTs</p>
+                        <p><strong>Delivery SLA:</strong> 24-48 Hours</p>
                     </div>
                 </div>
             </div>
@@ -350,6 +391,75 @@
     </div>
 
     <script>
+        // District Data Mapping for all major Indian States & Union Territories
+        const districtData = {
+            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Vellore", "Thanjavur", "Kanchipuram", "Dindigul", "Tuticorin", "Kanyakumari", "Nilgiris", "Karur"],
+            "Karnataka": ["Bengaluru Urban", "Bengaluru Rural", "Mysuru", "Mangaluru (Dakshina Kannada)", "Hubballi-Dharwad", "Belagavi", "Kalaburagi", "Tumakuru", "Shivamogga", "Udupi"],
+            "Maharashtra": ["Mumbai City", "Mumbai Suburban", "Pune", "Thane", "Nagpur", "Nashik", "Chhatrapati Sambhajinagar (Aurangabad)", "Solapur", "Amravati", "Kolhapur"],
+            "Kerala": ["Thiruvananthapuram", "Kochi (Ernakulam)", "Kozhikode", "Thrissur", "Kollam", "Kottayam", "Palakkad", "Kannur", "Alappuzha", "Wayanad"],
+            "Telangana": ["Hyderabad", "Medchal-Malkajgiri", "Rangareddy", "Warangal", "Nizamabad", "Khammam", "Karimnagar", "Mahbubnagar"],
+            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada (NTR)", "Guntur", "Tirupati", "Kakinada", "Kurnool", "Nellore", "Anantapur", "Srikakulam", "Kadapa"],
+            "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
+            "Uttar Pradesh": ["Lucknow", "Noida (Gautam Buddha Nagar)", "Ghaziabad", "Kanpur", "Varanasi", "Prayagraj", "Agra", "Meerut", "Gorakhpur", "Bareilly"],
+            "West Bengal": ["Kolkata", "Howrah", "North 24 Parganas", "South 24 Parganas", "Hooghly", "Darjeeling", "Siliguri", "Paschim Bardhaman", "Murshidabad"],
+            "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Bhavnagar", "Jamnagar", "Junagadh", "Anand"],
+            "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Bhilwara", "Alwar", "Sikar"],
+            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali (SAS Nagar)", "Bathinda", "Pathankot"],
+            "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Karnal", "Hisar", "Rohtak", "Panchkula"],
+            "Madhya Pradesh": ["Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Sagar", "Rewa"],
+            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Purnia", "Rohtas"],
+            "Odisha": ["Khurda (Bhubaneswar)", "Cuttack", "Ganjam", "Sundargarh (Rourkela)", "Puri", "Sambalpur", "Balasore"],
+            "Assam": ["Kamrup Metropolitan (Guwahati)", "Dibrugarh", "Silchar (Cachar)", "Jorhat", "Nagaon", "Tinsukia"],
+            "Jharkhand": ["Ranchi", "East Singhbhum (Jamshedpur)", "Dhanbad", "Bokaro", "Hazaribagh"],
+            "Chhattisgarh": ["Raipur", "Durg (Bhilai)", "Bilaspur", "Korba", "Rajnandgaon"],
+            "Uttarakhand": ["Dehradun", "Haridwar", "Nainital", "Udham Singh Nagar (Haldwani)"],
+            "Himachal Pradesh": ["Shimla", "Kangra (Dharamshala)", "Mandi", "Solan", "Kullu"],
+            "Goa": ["North Goa (Panaji)", "South Goa (Margao)"],
+            "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"],
+            "Jammu & Kashmir": ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Udhampur"],
+            "Ladakh": ["Leh", "Kargil"],
+            "Chandigarh": ["Chandigarh"],
+            "Andaman & Nicobar": ["South Andaman (Port Blair)", "North & Middle Andaman", "Nicobar"],
+            "Dadra Nagar Haveli & Daman Diu": ["Daman", "Diu", "Dadra & Nagar Haveli"],
+            "Lakshadweep": ["Kavaratti", "Agatti"],
+            "Tripura": ["West Tripura (Agartala)", "Gomati", "North Tripura"],
+            "Meghalaya": ["East Khasi Hills (Shillong)", "West Garo Hills"],
+            "Manipur": ["Imphal East", "Imphal West", "Churachandpur"],
+            "Nagaland": ["Kohima", "Dimapur"],
+            "Mizoram": ["Aizawl", "Lunglei"],
+            "Arunachal Pradesh": ["Papum Pare (Itanagar)", "Changlang"],
+            "Sikkim": ["East Sikkim (Gangtok)", "West Sikkim"]
+        };
+
+        function loadDistricts(selectedState) {
+            const districtDropdown = document.getElementById('districtSelect');
+            districtDropdown.innerHTML = '<option value="">-- Select District --</option>';
+
+            if (selectedState && districtData[selectedState]) {
+                districtData[selectedState].forEach(district => {
+                    let option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtDropdown.appendChild(option);
+                });
+            }
+            updateLocationBanner();
+        }
+
+        function updateLocationBanner() {
+            const state = document.getElementById('stateSelect').value;
+            const district = document.getElementById('districtSelect').value;
+            const checkoutLoc = document.getElementById('checkoutLocation');
+
+            if (state && district) {
+                checkoutLoc.value = district + ', ' + state + ', India';
+            } else if (state) {
+                checkoutLoc.value = state + ', India';
+            } else {
+                checkoutLoc.value = 'Select State & District from Header';
+            }
+        }
+
         function switchTab(tab) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -373,10 +483,6 @@
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
             }
-        }
-
-        function updateCity(city) {
-            alert('Global location updated to: ' + city + '. Fetching inventory for this region.');
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -461,7 +567,12 @@
 
         function handleCheckout(e) {
             e.preventDefault();
-            alert('KYC Document uploaded and order placed successfully! International/Local delivery scheduled.');
+            const loc = document.getElementById('checkoutLocation').value;
+            if (!loc || loc === 'Select State & District from Header') {
+                alert('Please select your State and District from the header first!');
+                return;
+            }
+            alert('KYC Document uploaded and order placed successfully!\n\nDelivery Location: ' + loc);
         }
 
         function handleService(e) {
