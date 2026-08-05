@@ -134,21 +134,33 @@
         .add-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none; padding: 0.6rem; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
         .add-btn:hover { opacity: 0.9; }
 
-        /* Maintenance Report Section */
-        .maintenance-section {
+        /* Full Maintenance & Inspection Report Section */
+        .report-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 1.8rem;
+            padding: 2rem;
             margin-top: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border-left: 6px solid #059669;
+            border-top: 6px solid #059669;
         }
-        .maintenance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1rem; }
-        .m-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; }
-        .m-card h4 { font-size: 0.95rem; color: #334155; font-weight: 800; margin-bottom: 0.4rem; }
-        .m-status-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.4rem; }
-        .status-resolved { background: #d1fae5; color: #059669; }
-        .status-pending { background: #fef3c7; color: #d97706; }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.88rem;
+        }
+        .report-table th, .report-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .report-table th {
+            background: #f8fafc;
+            color: #334155;
+            font-weight: 800;
+        }
+        .badge-resolved { background: #d1fae5; color: #059669; padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; }
+        .badge-progress { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; }
 
         /* Admin & Vendor Section */
         .admin-section {
@@ -329,7 +341,7 @@
 
         @media (max-width: 768px) {
             .grid-categories { grid-template-columns: repeat(3, 1fr); }
-            .admin-grid, .maintenance-grid { grid-template-columns: 1fr; }
+            .admin-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -399,28 +411,50 @@
             <!-- Dynamic Items Auto Loaded Below -->
         </div>
 
-        <!-- MAINTENANCE & SERVICE REPORT DASHBOARD -->
-        <div class="maintenance-section">
-            <h3 style="color: #0f172a; font-weight: 900; font-size: 1.25rem;">🛠 Maintenance & Service Report Dashboard</h3>
-            <p style="color: #64748b; font-size: 0.88rem; margin-top: 0.2rem; font-weight: 600;">Real-time tracking of active rental maintenance, technician responses, and damage claims.</p>
+        <!-- DETAILED MAINTENANCE & INSPECTION REPORT SECTION -->
+        <div class="report-section">
+            <h3 style="color: #0f172a; font-weight: 900; font-size: 1.3rem;">📋 Asset Maintenance & Inspection Report</h3>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Comprehensive log of active rental asset checks, maintenance reports, and damage claims.</p>
             
-            <div style="display: flex; gap: 8px; margin-top: 1rem;">
-                <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.7rem; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none; background: #fff;">
-                <button onclick="searchTicket()" style="padding: 0.7rem 1.2rem; background: #059669; color: #fff; border:none; border-radius: 8px; font-weight: bold; cursor: pointer;">Check Status</button>
-            </div>
-            <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
-
-            <div class="maintenance-grid" style="margin-top: 1.2rem;">
-                <div class="m-card">
-                    <span class="m-status-badge status-resolved">RESOLVED</span>
-                    <h4>TKT-1001: French Door Refrigerator Cooling Check</h4>
-                    <p style="font-size: 0.85rem; color: #475569;">Assigned Technician: Ramesh K. | Resolved on Aug 4, 2026. Thermostat recalibrated.</p>
-                </div>
-                <div class="m-card">
-                    <span class="m-status-badge status-pending">IN PROGRESS</span>
-                    <h4>TKT-1002: Chesterfield Sofa Fabric Cleaning</h4>
-                    <p style="font-size: 0.85rem; color: #475569;">Assigned Technician: Suresh M. | Scheduled for pickup and deep sanitation today.</p>
-                </div>
+            <div style="overflow-x: auto;">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Asset Name / ID</th>
+                            <th>Issue Reported</th>
+                            <th>Assigned Technician</th>
+                            <th>Inspection Date</th>
+                            <th>Status Report</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>TKT-1001</strong></td>
+                            <td>French Door Refrigerator (REF-204)</td>
+                            <td>Cooling coil inspection & thermostat reset</td>
+                            <td>Ramesh K.</td>
+                            <td>Aug 4, 2026</td>
+                            <td><span class="badge-resolved">RESOLVED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>TKT-1002</strong></td>
+                            <td>Chesterfield Sofa (SOF-109)</td>
+                            <td>Deep fabric sanitation & cushion check</td>
+                            <td>Suresh M.</td>
+                            <td>Aug 5, 2026</td>
+                            <td><span class="badge-progress">IN PROGRESS</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>TKT-1003</strong></td>
+                            <td>Teak Wood King Bed (BED-302)</td>
+                            <td>Preventive structural tightening & polish</td>
+                            <td>Anand V.</td>
+                            <td>Aug 6, 2026</td>
+                            <td><span class="badge-progress">SCHEDULED</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -475,7 +509,7 @@
 
                     <div class="analytics-card">
                         <h4>Damage Claims & Maintenance Tickets</h4>
-                        <div class="value" style="color: #eab308;">3 Active Reports Logged</div>
+                        <div class="value" style="color: #eab308;">3 Maintenance Reports Active</div>
                     </div>
 
                     <div class="analytics-card">
@@ -940,26 +974,6 @@
                     }
                 );
             } else { alert("Geolocation not supported by browser."); }
-        }
-
-        function searchTicket() {
-            const id = document.getElementById('checkTicketId').value.trim().toUpperCase();
-            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [
-                { id: "TKT-1001", response: "Technician assigned: Ramesh K. Cooling coil replaced under warranty. Status: Resolved." },
-                { id: "TKT-1002", response: "Scheduled for deep sanitation and fabric maintenance pickup." }
-            ];
-            let found = tickets.find(t => t.id === id);
-            const result = document.getElementById('ticketResultArea');
-            if (found) {
-                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #059669; font-size:0.9rem;">
-                    <p style="color:#047857;"><strong>✔ Maintenance Report Found (${found.id})</strong></p>
-                    <p style="color:#1e293b; margin-top:2px;"><strong>Details:</strong> ${found.response}</p>
-                </div>`;
-            } else {
-                result.innerHTML = `<div style="background:#fef2f2; padding:0.8rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.9rem;">
-                    <p style="color:#b91c1c;">✖ Ticket ID Not Found. Try entering <strong>TKT-1001</strong> or <strong>TKT-1002</strong></p>
-                </div>`;
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
