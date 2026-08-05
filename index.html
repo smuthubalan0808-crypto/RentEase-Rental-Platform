@@ -6,16 +6,23 @@
     <title>RentEase - Furniture & Appliance Rental Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f8f9fa; color: #2c3e50; line-height: 1.5; min-height: 100vh; }
+        body { 
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%); 
+            color: #1e293b; 
+            line-height: 1.5; 
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
         
         /* Header */
         header { 
             position: sticky;
             top: 0;
             z-index: 100;
-            background: #ffffff; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
             padding: 0.8rem 1.2rem; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
@@ -28,33 +35,36 @@
             font-weight: 700; 
             font-size: 0.95rem; 
             cursor: pointer; 
-            color: #2c3e50; 
-            background: #edf2f7;
-            padding: 0.4rem 0.8rem;
+            color: #4f46e5; 
+            background: #ede9fe;
+            padding: 0.4rem 0.9rem;
             border-radius: 20px;
+            border: 1px solid #c7d2fe;
         }
-        .nav-icons { display: flex; gap: 12px; font-size: 1rem; cursor: pointer; color: #4a5568; align-items: center; }
-        .admin-link-btn { background: #1e293b; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
-        .user-auth-btn { background: #0072ff; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .nav-icons { display: flex; gap: 12px; font-size: 1rem; cursor: pointer; align-items: center; }
+        .admin-link-btn { background: #1e293b; color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
+        .user-auth-btn { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
         .search-bar { position: relative; width: 100%; }
         .search-bar input { 
             width: 100%; 
             padding: 0.75rem 1rem 0.75rem 2.5rem; 
-            border: 1px solid #e2e8f0; 
+            border: 2px solid #e2e8f0; 
             border-radius: 24px; 
-            background: #f1f5f9; 
+            background: #f8fafc; 
             font-size: 0.95rem; 
             outline: none;
+            transition: border-color 0.2s;
         }
-        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .search-bar input:focus { border-color: #6366f1; background: #fff; }
+        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #6366f1; }
 
         /* Container */
-        .container { max-width: 1000px; margin: 0 auto; padding: 1.2rem; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
 
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0 1rem 0; }
-        .section-title { font-size: 1.25rem; font-weight: 800; color: #1e293b; }
-        .reset-filter-btn { font-size: 0.85rem; color: #0072ff; font-weight: 700; cursor: pointer; background: #ebf8ff; border: none; padding: 0.3rem 0.8rem; border-radius: 12px; display: none; }
+        .section-title { font-size: 1.35rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .reset-filter-btn { font-size: 0.85rem; color: #ffffff; font-weight: 700; cursor: pointer; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4); padding: 0.3rem 0.9rem; border-radius: 12px; display: none; }
 
         /* Category Grid */
         .grid-categories { 
@@ -64,107 +74,112 @@
             text-align: center;
         }
         .cat-item { 
-            background: #fff; 
+            background: rgba(255, 255, 255, 0.92); 
+            backdrop-filter: blur(8px);
             padding: 0.8rem 0.4rem; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
+            border-radius: 14px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             cursor: pointer;
             border: 2px solid transparent;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
         }
-        .cat-item:hover { transform: translateY(-3px); border-color: #0072ff; }
-        .cat-item.active-cat { border-color: #0072ff; background: #f0f7ff; }
+        .cat-item:hover { transform: translateY(-4px); border-color: #f43f5e; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .cat-item.active-cat { border-color: #f43f5e; background: #fff1f2; }
         .cat-img { width: 100%; height: 75px; object-fit: cover; border-radius: 8px; margin-bottom: 0.4rem; }
-        .cat-title { font-size: 0.78rem; font-weight: 700; color: #334155; }
+        .cat-title { font-size: 0.78rem; font-weight: 800; color: #1e293b; }
 
         /* Banner */
         .banner-card { 
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+            background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #f97316 100%); 
             color: #fff; 
-            border-radius: 16px; 
-            padding: 1.5rem; 
-            margin: 1.5rem 0; 
+            border-radius: 20px; 
+            padding: 1.8rem; 
+            margin: 1.8rem 0; 
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.4);
         }
         .banner-btn {
-            background: #ff4757;
-            color: #fff;
+            background: #ffffff;
+            color: #f43f5e;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.6rem 1.4rem;
             border-radius: 20px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             margin-top: 0.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
+        .banner-btn:hover { transform: scale(1.05); }
 
         /* Products Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-        .product-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
-        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background-color: #f1f5f9; }
-        .product-category-tag { font-size: 0.75rem; font-weight: 700; color: #0072ff; text-transform: uppercase; margin-top: 0.5rem; }
-        .product-name { font-size: 0.95rem; font-weight: 700; margin: 0.2rem 0; color: #1e293b; }
-        .product-price { font-size: 1.1rem; font-weight: 800; color: #10b981; }
-        .add-btn { background: #0072ff; color: #fff; border: none; padding: 0.5rem; width: 100%; border-radius: 6px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; }
-
-        /* Maintenance Section Styles */
-        .maintenance-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
+        .product-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 16px; 
+            padding: 1rem; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            transition: transform 0.2s;
         }
-        .maintenance-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1.2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .maintenance-card h3 { font-size: 1.1rem; color: #1e293b; margin-bottom: 0.8rem; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; background-color: #f1f5f9; }
+        .product-category-tag { font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase; margin-top: 0.5rem; }
+        .product-name { font-size: 0.95rem; font-weight: 800; margin: 0.2rem 0; color: #0f172a; }
+        .product-price { font-size: 1.15rem; font-weight: 900; color: #059669; }
+        .add-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none; padding: 0.6rem; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .add-btn:hover { opacity: 0.9; }
 
         /* Admin & Vendor Section */
         .admin-section {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 1.8rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
             margin-top: 2.5rem;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            border-top: 5px solid #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-top: 6px solid #4f46e5;
         }
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
         
-        .form-group { margin-bottom: 0.8rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 0.3rem; }
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 800; color: #334155; margin-bottom: 0.3rem; }
         .form-group input, .form-group select, .form-group textarea { 
             width: 100%; 
             padding: 0.75rem 1rem; 
             border: 1px solid #cbd5e1; 
-            border-radius: 8px; 
+            border-radius: 10px; 
             font-size: 0.9rem; 
             outline: none;
+            background: #f8fafc;
         }
+        .form-group input:focus, .form-group select:focus { border-color: #4f46e5; background: #fff; }
 
         .btn-admin {
             background: #1e293b;
             color: #fff;
             border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 700;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: 800;
             width: 100%;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .analytics-card {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.8rem;
+            border-radius: 12px;
+            padding: 1.1rem;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
-        .analytics-card h4 { font-size: 0.9rem; color: #64748b; margin-bottom: 0.2rem; }
-        .analytics-card .value { font-size: 1.4rem; font-weight: 800; color: #0f172a; }
+        .analytics-card h4 { font-size: 0.9rem; color: #64748b; margin-bottom: 0.2rem; font-weight: 700; }
+        .analytics-card .value { font-size: 1.4rem; font-weight: 900; color: #0f172a; }
 
         /* Modals Common Style */
         .modal-overlay {
@@ -173,7 +188,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -185,9 +201,9 @@
             background: #ffffff;
             width: 90%;
             max-width: 440px;
-            border-radius: 16px;
-            padding: 1.8rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             position: relative;
         }
 
@@ -202,23 +218,24 @@
         }
 
         .tab-buttons { display: flex; margin-bottom: 1.2rem; border-bottom: 2px solid #e2e8f0; }
-        .tab-btn { flex: 1; padding: 0.6rem; background: none; border: none; font-weight: bold; color: #64748b; cursor: pointer; }
-        .tab-btn.active { color: #0072ff; border-bottom: 3px solid #0072ff; }
+        .tab-btn { flex: 1; padding: 0.6rem; background: none; border: none; font-weight: 800; color: #64748b; cursor: pointer; }
+        .tab-btn.active { color: #4f46e5; border-bottom: 3px solid #4f46e5; }
 
         .auth-form { display: none; }
         .auth-form.active { display: block; }
 
         .btn-submit-auth {
             width: 100%;
-            background: #0072ff;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: #fff;
             border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 700;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: 800;
             font-size: 0.95rem;
             cursor: pointer;
             margin-top: 0.5rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         }
 
         .location-modal {
@@ -226,14 +243,14 @@
             width: 100%;
             max-width: 480px;
             border-radius: 24px 24px 0 0;
-            padding: 1.8rem;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+            padding: 2rem;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
             max-height: 90vh;
             overflow-y: auto;
             align-self: flex-end;
         }
 
-        .modal-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin-bottom: 0.2rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; color: #0f172a; margin-bottom: 0.2rem; }
         .modal-sub { color: #64748b; font-size: 0.85rem; margin-bottom: 1.2rem; }
 
         .or-divider {
@@ -242,8 +259,8 @@
             text-align: center;
             color: #94a3b8;
             font-size: 0.8rem;
-            font-weight: 700;
-            margin: 1rem 0;
+            font-weight: 800;
+            margin: 1.1rem 0;
         }
         .or-divider::before, .or-divider::after {
             content: '';
@@ -256,43 +273,50 @@
             display: flex;
             align-items: center;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 0.9rem;
             cursor: pointer;
-            background: #fff;
-            margin-bottom: 0.6rem;
+            background: #f8fafc;
+            margin-bottom: 0.7rem;
+            transition: all 0.2s;
         }
+        .option-box:hover { border-color: #4f46e5; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .option-icon {
             width: 40px;
             height: 40px;
-            background: #f1f5f9;
+            background: #ede9fe;
+            color: #4f46e5;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            margin-right: 0.8rem;
+            margin-right: 0.9rem;
         }
-        .option-text h4 { font-size: 0.95rem; color: #1e293b; margin-bottom: 0.1rem; }
+        .option-text h4 { font-size: 0.95rem; color: #0f172a; margin-bottom: 0.1rem; font-weight: 800; }
         .option-text p { font-size: 0.78rem; color: #64748b; }
         .arrow-icon { margin-left: auto; color: #94a3b8; font-weight: bold; }
 
         .btn-confirm {
             width: 100%;
-            background: #0072ff;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: #fff;
             border: none;
-            padding: 0.8rem;
-            border-radius: 10px;
-            font-weight: 700;
+            padding: 0.85rem;
+            border-radius: 12px;
+            font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
             margin-top: 0.5rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         }
+
+        .ticket-tracker { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 1.5rem; margin-top: 2rem; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .ticket-tracker h3 { color: #0f172a; font-weight: 900; }
 
         @media (max-width: 768px) {
             .grid-categories { grid-template-columns: repeat(3, 1fr); }
-            .admin-grid, .maintenance-container { grid-template-columns: 1fr; }
+            .admin-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -350,8 +374,8 @@
         <!-- Promo Banner -->
         <div class="banner-card">
             <div>
-                <h3 style="font-size: 1.3rem;">Full Home Furnishing Packages</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9;">Rents starting at ₹999/mo</p>
+                <h3 style="font-size: 1.4rem; font-weight: 900;">Full Home Furnishing Packages</h3>
+                <p style="font-size: 0.95rem; opacity: 0.95; font-weight: 600;">Rents starting at ₹999/mo</p>
                 <button class="banner-btn" onclick="filterCategory('Packages')">Explore Packages</button>
             </div>
         </div>
@@ -362,48 +386,24 @@
             <!-- Dynamic Items Auto Loaded Below -->
         </div>
 
-        <!-- Maintenance & Service Ticket Section (Report + Lookup) -->
-        <div class="maintenance-container">
-            <!-- Report / Raise Maintenance Request -->
-            <div class="maintenance-card">
-                <h3>🛠️ Report / Raise Maintenance Request</h3>
-                <form onsubmit="handleRaiseTicket(event)">
-                    <div class="form-group">
-                        <label>Your Name / User ID</label>
-                        <input type="text" id="ticketUserName" placeholder="e.g. Rahul Sharma" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Item Requiring Maintenance</label>
-                        <input type="text" id="ticketItemName" placeholder="e.g. Double Door Refrigerator" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Issue Description</label>
-                        <textarea id="ticketIssue" rows="2" placeholder="Describe the problem..." required style="width:100%; padding:0.75rem; border:1px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit;"></textarea>
-                    </div>
-                    <button type="submit" class="btn-admin" style="background:#0072ff;">Submit Maintenance Request</button>
-                </form>
+        <!-- Service Ticket Tracker -->
+        <div class="ticket-tracker">
+            <h3>Service Ticket & Maintenance Lookup</h3>
+            <div style="display: flex; gap: 8px; margin-top: 0.8rem;">
+                <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.7rem; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none;">
+                <button onclick="searchTicket()" style="padding: 0.7rem 1.2rem; background: #4f46e5; color: #fff; border:none; border-radius: 8px; font-weight: bold; cursor: pointer;">Check Status</button>
             </div>
-
-            <!-- Check Status Lookup -->
-            <div class="maintenance-card">
-                <h3>🔍 Service Ticket Lookup</h3>
-                <div class="form-group">
-                    <label>Enter Ticket ID</label>
-                    <input type="text" id="checkTicketId" placeholder="e.g. TKT-1001">
-                </div>
-                <button onclick="searchTicket()" class="btn-admin" style="background:#334155; margin-bottom: 0.8rem;">Check Status</button>
-                <div id="ticketResultArea"></div>
-            </div>
+            <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
         </div>
 
         <!-- ADMIN & VENDOR FEATURES SECTION -->
         <div class="admin-section" id="adminSection">
-            <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Admin & Vendor Dashboard</h2>
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem;">Inventory Management, Rental Pricing, Delivery Logistics & Maintenance Requests</p>
+            <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a;">Admin & Vendor Dashboard</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Inventory Management, Rental Pricing, Delivery Logistics & Maintenance Requests</p>
             
             <div class="admin-grid">
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b;">1. Add & Manage Product Inventory</h3>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">1. Add & Manage Product Inventory</h3>
                     <form id="adminAddProductForm" onsubmit="handleAddProduct(event)">
                         <div class="form-group">
                             <label>Product Name</label>
@@ -433,7 +433,7 @@
                 </div>
 
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b;">2. Logistics & Analytics Overview</h3>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Logistics & Analytics Overview</h3>
                     
                     <div class="analytics-card">
                         <h4>Total Active Rentals & Orders</h4>
@@ -447,12 +447,12 @@
 
                     <div class="analytics-card">
                         <h4>Damage Claims & Maintenance Tickets</h4>
-                        <div class="value" style="color: #eab308;" id="pendingTicketsCount">3 Pending Maintenance Tickets</div>
+                        <div class="value" style="color: #eab308;">3 Pending Maintenance Tickets</div>
                     </div>
 
                     <div class="analytics-card">
                         <h4>Active Service Regions</h4>
-                        <div class="value" style="color: #10b981;">Pan-India (All States & UTs)</div>
+                        <div class="value" style="color: #059669;">Pan-India (All States & UTs)</div>
                     </div>
                 </div>
             </div>
@@ -531,7 +531,7 @@
             <div class="or-divider"><span>OR</span></div>
 
             <div class="option-box" onclick="fetchGPSLocation()">
-                <div class="option-icon" style="background:#fef2f2; color:#ef4444;">🏠📍</div>
+                <div class="option-icon">🏠</div>
                 <div class="option-text">
                     <h4>Fetch my location</h4>
                     <p id="gpsStatusText">Let GPS automatically fetch your current location.</p>
@@ -542,7 +542,7 @@
             <div class="or-divider"><span>OR</span></div>
 
             <div class="option-box" onclick="openAuthModalFromLoc()">
-                <div class="option-icon" style="background:#f0f9ff; color:#0284c7;">📍</div>
+                <div class="option-icon">📍</div>
                 <div class="option-text">
                     <h4>Login if existing user</h4>
                     <p>Login now to auto select your default address.</p>
@@ -553,7 +553,7 @@
             <div class="or-divider"><span>OR</span></div>
 
             <div class="option-box" onclick="closeModal('Just Browsing')">
-                <div class="option-icon" style="background:#f8fafc; color:#64748b;">🪧</div>
+                <div class="option-icon">🪧</div>
                 <div class="option-text">
                     <h4>Just Browsing</h4>
                     <p>If you are looking to checkout our catalogue. Choose this option.</p>
@@ -633,7 +633,7 @@
             grid.innerHTML = '';
 
             if (items.length === 0) {
-                grid.innerHTML = '<p style="color:#64748b; grid-column: 1/-1; text-align:center; padding: 2rem;">No products found for this category or search.</p>';
+                grid.innerHTML = '<p style="color:#ffffff; grid-column: 1/-1; text-align:center; padding: 2rem; font-weight: bold;">No products found for this category or search.</p>';
                 return;
             }
 
@@ -683,7 +683,6 @@
             renderProducts(filtered);
         }
 
-        /* User Login & Register Modal Logic */
         function openAuthModal() {
             document.getElementById('authModal').classList.remove('hidden');
         }
@@ -825,14 +824,14 @@
             const gpsText = document.getElementById('gpsStatusText');
             if ("geolocation" in navigator) {
                 gpsText.textContent = "Fetching GPS coordinates...";
-                gpsText.style.color = "#0072ff";
+                gpsText.style.color = "#4f46e5";
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         const lat = position.coords.latitude.toFixed(2);
                         const lon = position.coords.longitude.toFixed(2);
                         const locStr = `GPS (${lat}°, ${lon}°), India`;
                         gpsText.textContent = "✔ Location set!";
-                        gpsText.style.color = "#10b981";
+                        gpsText.style.color = "#059669";
                         setTimeout(() => { closeModal(locStr); }, 600);
                     },
                     function() {
@@ -843,45 +842,19 @@
             } else { alert("Geolocation not supported by browser."); }
         }
 
-        // Raise / Report Maintenance Ticket Function
-        function handleRaiseTicket(e) {
-            e.preventDefault();
-            const userName = document.getElementById('ticketUserName').value.trim();
-            const itemName = document.getElementById('ticketItemName').value.trim();
-            const issueDesc = document.getElementById('ticketIssue').value.trim();
-
-            const randomId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
-            const newTicket = {
-                id: randomId,
-                name: userName,
-                item: itemName,
-                response: `Issue reported for ${itemName}: "${issueDesc}". Status: Under review by service team. Scheduled resolution within 24-48 hours.`
-            };
-
-            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
-            tickets.push(newTicket);
-            localStorage.setItem('rentEaseTickets', JSON.stringify(tickets));
-
-            alert('Maintenance request submitted successfully! Your Ticket ID is: ' + randomId);
-            document.getElementById('checkTicketId').value = randomId;
-            searchTicket();
-            e.target.reset();
-        }
-
         function searchTicket() {
             const id = document.getElementById('checkTicketId').value.trim().toUpperCase();
             let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
             let found = tickets.find(t => t.id === id);
             const result = document.getElementById('ticketResultArea');
             if (found) {
-                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
-                    <p style="color:#047857;"><strong>✔ Ticket ID: ${found.id}</strong></p>
-                    <p><strong>Reported By:</strong> ${found.name}</p>
-                    <p style="margin-top:4px;"><strong>Status:</strong> ${found.response}</p>
+                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #059669; font-size:0.9rem;">
+                    <p style="color:#047857;"><strong>✔ Responded</strong> (${found.id})</p>
+                    <p><strong>Response:</strong> ${found.response}</p>
                 </div>`;
             } else {
                 result.innerHTML = `<div style="background:#fef2f2; padding:0.8rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.9rem;">
-                    <p style="color:#b91c1c;">✖ Ticket ID Not Found. Please verify or submit a new report.</p>
+                    <p style="color:#b91c1c;">✖ Ticket ID Not Found (e.g. try TKT-1001 or add via Admin)</p>
                 </div>`;
             }
         }
