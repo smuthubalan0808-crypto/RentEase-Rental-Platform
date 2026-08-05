@@ -77,17 +77,33 @@
         .section-title { text-align: center; margin-bottom: 1.5rem; color: #1e3c72; font-weight: 800; font-size: 1.8rem; }
 
         .catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem; margin-top: 1rem; }
+        
         .product-card { 
             background: #fff; 
             border-radius: 12px; 
-            padding: 1.8rem; 
+            padding: 1.5rem; 
             box-shadow: 0 6px 18px rgba(0,0,0,0.06); 
             transition: transform 0.3s, box-shadow 0.3s;
             border-left: 6px solid #FF8008;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .product-card:nth-child(2) { border-left-color: #FFC837; }
+        .product-card:nth-child(2) { border-left-color: #0072ff; }
+        .product-card:nth-child(3) { border-left-color: #DD2476; }
+        .product-card:nth-child(4) { border-left-color: #38ef7d; }
+
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
-        .product-card h3 { color: #1e3c72; margin-bottom: 0.5rem; font-size: 1.3rem; }
+        
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-card h3 { color: #1e3c72; margin-bottom: 0.3rem; font-size: 1.3rem; }
         
         .price-tag { color: #11998e; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; }
         .deposit-tag { color: #e67e22; font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; }
@@ -163,37 +179,87 @@
         <!-- Catalog Section -->
         <h2 class="section-title" id="catalog">Featured Rental Catalog</h2>
         <div class="catalog">
+            
+            <!-- Item 1 -->
             <div class="product-card">
-                <h3>Ergonomic Office Chair</h3>
-                <p><strong>Category:</strong> Furniture</p>
-                <div class="price-tag">₹499 / month</div>
-                <div class="deposit-tag">Refundable Deposit: ₹1,000</div>
-                <div class="form-group">
-                    <label>Tenure Option:</label>
-                    <select>
-                        <option>3 Months</option>
-                        <option>6 Months (10% OFF)</option>
-                        <option>12 Months (20% OFF)</option>
-                    </select>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=600&q=80" alt="Ergonomic Office Chair" class="product-img">
+                    <h3>Ergonomic Office Chair</h3>
+                    <p><strong>Category:</strong> Furniture</p>
+                    <div class="price-tag">₹499 / month</div>
+                    <div class="deposit-tag">Refundable Deposit: ₹1,000</div>
+                    <div class="form-group">
+                        <label>Tenure Option:</label>
+                        <select>
+                            <option>3 Months</option>
+                            <option>6 Months (10% OFF)</option>
+                            <option>12 Months (20% OFF)</option>
+                        </select>
+                    </div>
                 </div>
                 <button class="btn" onclick="selectProduct('Ergonomic Office Chair', '499', '1000')">Select for Rent</button>
             </div>
 
+            <!-- Item 2 -->
             <div class="product-card">
-                <h3>Double Door Refrigerator</h3>
-                <p><strong>Category:</strong> Appliances</p>
-                <div class="price-tag">₹899 / month</div>
-                <div class="deposit-tag">Refundable Deposit: ₹2,000</div>
-                <div class="form-group">
-                    <label>Tenure Option:</label>
-                    <select>
-                        <option>3 Months</option>
-                        <option>6 Months (10% OFF)</option>
-                        <option>12 Months (20% OFF)</option>
-                    </select>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=600&q=80" alt="Double Door Refrigerator" class="product-img">
+                    <h3>Double Door Refrigerator</h3>
+                    <p><strong>Category:</strong> Appliances</p>
+                    <div class="price-tag">₹899 / month</div>
+                    <div class="deposit-tag">Refundable Deposit: ₹2,000</div>
+                    <div class="form-group">
+                        <label>Tenure Option:</label>
+                        <select>
+                            <option>3 Months</option>
+                            <option>6 Months (10% OFF)</option>
+                            <option>12 Months (20% OFF)</option>
+                        </select>
+                    </div>
                 </div>
                 <button class="btn" onclick="selectProduct('Double Door Refrigerator', '899', '2000')">Select for Rent</button>
             </div>
+
+            <!-- Item 3 -->
+            <div class="product-card">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80" alt="3-Seater Modern Sofa" class="product-img">
+                    <h3>3-Seater Fabric Sofa</h3>
+                    <p><strong>Category:</strong> Furniture</p>
+                    <div class="price-tag">₹799 / month</div>
+                    <div class="deposit-tag">Refundable Deposit: ₹1,500</div>
+                    <div class="form-group">
+                        <label>Tenure Option:</label>
+                        <select>
+                            <option>3 Months</option>
+                            <option>6 Months (10% OFF)</option>
+                            <option>12 Months (20% OFF)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="selectProduct('3-Seater Fabric Sofa', '799', '1500')">Select for Rent</button>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="product-card">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=600&q=80" alt="Front Load Washing Machine" class="product-img">
+                    <h3>Fully Automatic Washer</h3>
+                    <p><strong>Category:</strong> Appliances</p>
+                    <div class="price-tag">₹699 / month</div>
+                    <div class="deposit-tag">Refundable Deposit: ₹1,800</div>
+                    <div class="form-group">
+                        <label>Tenure Option:</label>
+                        <select>
+                            <option>3 Months</option>
+                            <option>6 Months (10% OFF)</option>
+                            <option>12 Months (20% OFF)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="selectProduct('Fully Automatic Washer', '699', '1800')">Select for Rent</button>
+            </div>
+
         </div>
 
         <!-- Checkout & Delivery Scheduler Section -->
@@ -261,7 +327,7 @@
                     <form id="adminInventoryForm" onsubmit="handleAddInventory(event)" style="margin-top: 1rem;">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" placeholder="e.g. Washing Machine" required>
+                            <input type="text" placeholder="e.g. Microwave Oven" required>
                         </div>
                         <div class="form-group">
                             <label>Category</label>
@@ -272,7 +338,7 @@
                         </div>
                         <div class="form-group">
                             <label>Monthly Rent (₹)</label>
-                            <input type="number" placeholder="699" required>
+                            <input type="number" placeholder="499" required>
                         </div>
                         <button type="submit" class="btn" style="background: linear-gradient(90deg, #FF8008 0%, #FFC837 100%); border:none;">Add Product to Catalog</button>
                     </form>
@@ -380,405 +446,7 @@
                         
                         const authCard = document.getElementById('auth-section');
                         if (authCard) {
-                            authCard.innerHTML = '<div style="text-align:center; padding: 1.8rem; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; color: #ffffff; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);"><h3>✔ Logged In as ' + validUser.name + ' (' + validUser.email + ')</h3><p style="color:#f0f0f0; margin-top:5px;">Select products below to start renting.</p></div>';
-                        }
-
-                        window.location.hash = '#catalog';
-                    } else {
-                        alert('Account not found or password incorrect! Please register first.');
-                    }
-                });
-            }
-        });
-
-        function selectProduct(name, price, deposit) {
-            const itemInput = document.getElementById('selectedItem');
-            if (itemInput) itemInput.value = name + ' (₹' + price + '/mo + ₹' + deposit + ' Deposit)';
-            window.location.hash = '#checkout';
-        }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentEase - Furniture & Appliance Rental Platform</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%); color: #2c3e50; line-height: 1.6; min-height: 100vh; }
-        
-        header { 
-            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); 
-            color: #fff; 
-            padding: 1.2rem 2rem; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .logo { font-size: 1.8rem; font-weight: 800; color: #00d2ff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        nav a { color: #ffffff; text-decoration: none; margin-left: 20px; font-weight: 600; transition: color 0.3s; }
-        nav a:hover { color: #00d2ff; }
-
-        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
-        
-        .card { 
-            background: #ffffff; 
-            padding: 2rem; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
-            margin-bottom: 2rem; 
-            border-top: 5px solid #00c6ff;
-        }
-        .auth-card { max-width: 480px; margin: 0 auto 2.5rem auto; border-top: 5px solid #0072ff; }
-        
-        .tab-buttons { display: flex; margin-bottom: 1.5rem; border-bottom: 2px solid #e0e0e0; }
-        .tab-btn { flex: 1; padding: 0.85rem; background: none; border: none; font-size: 1.1rem; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { color: #0072ff; border-bottom: 4px solid #0072ff; }
-
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #34495e; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 0.8rem; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 6px; 
-            font-size: 1rem; 
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: #0072ff;
-            outline: none;
-        }
-
-        .btn { 
-            display: inline-block; 
-            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); 
-            color: #fff; 
-            padding: 0.85rem 1.5rem; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            width: 100%; 
-            font-size: 1.05rem; 
-            font-weight: bold; 
-            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(56, 239, 125, 0.4); }
-        
-        .btn-secondary { 
-            background: linear-gradient(90deg, #FF512F 0%, #DD2476 100%); 
-            box-shadow: 0 4px 12px rgba(221, 36, 118, 0.3);
-        }
-        .btn-secondary:hover { box-shadow: 0 6px 16px rgba(221, 36, 118, 0.4); }
-
-        .section-title { text-align: center; margin-bottom: 1.5rem; color: #1e3c72; font-weight: 800; font-size: 1.8rem; }
-
-        .catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem; margin-top: 1rem; }
-        .product-card { 
-            background: #fff; 
-            border-radius: 12px; 
-            padding: 1.8rem; 
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06); 
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 6px solid #FF8008;
-        }
-        .product-card:nth-child(2) { border-left-color: #FFC837; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
-        .product-card h3 { color: #1e3c72; margin-bottom: 0.5rem; font-size: 1.3rem; }
-        
-        .price-tag { color: #11998e; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; }
-        .deposit-tag { color: #e67e22; font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; }
-        
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        
-        .analytics-box {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo">RentEase</div>
-        <nav>
-            <a href="#catalog">Catalog</a>
-            <a href="#checkout">Checkout</a>
-            <a href="#services">Maintenance</a>
-            <a href="#admin">Admin</a>
-        </nav>
-    </header>
-
-    <div class="container">
-        
-        <!-- User Authentication Card -->
-        <div class="card auth-card" id="auth-section">
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
-                <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
-                    <input type="text" id="loginEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn">Login to Account</button>
-            </form>
-
-            <!-- Registration Form -->
-            <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label for="regName">Full Name</label>
-                    <input type="text" id="regName" placeholder="John Doe" required>
-                </div>
-                <div class="form-group">
-                    <label for="regEmail">Email Address</label>
-                    <input type="text" id="regEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Password</label>
-                    <input type="password" id="regPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn">Create Account</button>
-            </form>
-        </div>
-
-        <!-- Catalog Section -->
-        <h2 class="section-title" id="catalog">Featured Rental Catalog</h2>
-        <div class="catalog">
-            <div class="product-card">
-                <h3>Ergonomic Office Chair</h3>
-                <p><strong>Category:</strong> Furniture</p>
-                <div class="price-tag">₹499 / month</div>
-                <div class="deposit-tag">Refundable Deposit: ₹1,000</div>
-                <div class="form-group">
-                    <label>Tenure Option:</label>
-                    <select>
-                        <option>3 Months</option>
-                        <option>6 Months (10% OFF)</option>
-                        <option>12 Months (20% OFF)</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="selectProduct('Ergonomic Office Chair', '499', '1000')">Select for Rent</button>
-            </div>
-
-            <div class="product-card">
-                <h3>Double Door Refrigerator</h3>
-                <p><strong>Category:</strong> Appliances</p>
-                <div class="price-tag">₹899 / month</div>
-                <div class="deposit-tag">Refundable Deposit: ₹2,000</div>
-                <div class="form-group">
-                    <label>Tenure Option:</label>
-                    <select>
-                        <option>3 Months</option>
-                        <option>6 Months (10% OFF)</option>
-                        <option>12 Months (20% OFF)</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="selectProduct('Double Door Refrigerator', '899', '2000')">Select for Rent</button>
-            </div>
-        </div>
-
-        <!-- Checkout & Delivery Scheduler Section -->
-        <div class="card" id="checkout" style="margin-top: 2rem; border-top-color: #38ef7d;">
-            <h2 style="color: #11998e; margin-bottom: 1rem;">Checkout & Delivery Scheduling</h2>
-            <form id="checkoutForm" onsubmit="handleCheckout(event)">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Selected Item</label>
-                        <input type="text" id="selectedItem" value="Ergonomic Office Chair" readonly style="background: #f8f9fa;">
-                    </div>
-                    <div class="form-group">
-                        <label>Delivery Address / Location</label>
-                        <input type="text" placeholder="Enter delivery location" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Delivery Date</label>
-                        <input type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Payment Mode</label>
-                        <select>
-                            <option>Credit/Debit Card</option>
-                            <option>UPI / NetBanking</option>
-                            <option>Pay on Delivery</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Confirm Order & Schedule Delivery</button>
-            </form>
-        </div>
-
-        <!-- Maintenance & Relocation Support Section -->
-        <div class="card" id="services" style="border-top-color: #DD2476;">
-            <h2 style="color: #DD2476; margin-bottom: 1rem;">Maintenance & Relocation Support</h2>
-            <form id="serviceForm" onsubmit="handleService(event)">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Service Type</label>
-                        <select id="serviceType">
-                            <option>Maintenance / Repair Request</option>
-                            <option>Relocation / Pickup Request</option>
-                            <option>Tenure Extension Request</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Preferred Date</label>
-                        <input type="date" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Details / Description</label>
-                    <textarea rows="3" placeholder="Describe the issue or specify relocation address details..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-secondary">Submit Request</button>
-            </form>
-        </div>
-
-        <!-- Admin & Vendor Portal Section -->
-        <div class="card" id="admin" style="border-top-color: #FF8008;">
-            <h2 style="color: #FF8008; margin-bottom: 1rem;">Admin & Vendor Dashboard</h2>
-            <div class="grid-2">
-                <div>
-                    <h3>Add New Inventory Item</h3>
-                    <form id="adminInventoryForm" onsubmit="handleAddInventory(event)" style="margin-top: 1rem;">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <input type="text" placeholder="e.g. Washing Machine" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select>
-                                <option>Furniture</option>
-                                <option>Appliances</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Monthly Rent (₹)</label>
-                            <input type="number" placeholder="699" required>
-                        </div>
-                        <button type="submit" class="btn" style="background: linear-gradient(90deg, #FF8008 0%, #FFC837 100%); border:none;">Add Product to Catalog</button>
-                    </form>
-                </div>
-                <div>
-                    <h3>System Overview & Analytics</h3>
-                    <div class="analytics-box">
-                        <p><strong>Active Rentals:</strong> 124 units</p>
-                        <p><strong>Monthly Recurring Revenue:</strong> ₹98,500</p>
-                        <p><strong>Pending Maintenance Tickets:</strong> 3 requests</p>
-                        <p><strong>System Service Status:</strong> Active & Operational</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        function switchTab(tab) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const loginBtn = document.getElementById('loginTabBtn');
-            const registerBtn = document.getElementById('registerTabBtn');
-
-            if (tab === 'login') {
-                if (loginForm) loginForm.style.display = 'block';
-                if (registerForm) registerForm.style.display = 'none';
-                if (loginBtn) loginBtn.classList.add('active');
-                if (registerBtn) registerBtn.classList.remove('active');
-            } else {
-                if (loginForm) loginForm.style.display = 'none';
-                if (registerForm) registerForm.style.display = 'block';
-                if (registerBtn) registerBtn.classList.add('active');
-                if (loginBtn) loginBtn.classList.remove('active');
-            }
-        }
-
-        function setCursorToStart(inputElement) {
-            if (inputElement.value === '@gmail.com') {
-                setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const regForm = document.getElementById('registerForm');
-            const loginForm = document.getElementById('loginForm');
-
-            if (regForm) {
-                regForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const nameInput = document.getElementById('regName');
-                    const emailInput = document.getElementById('regEmail');
-                    const passInput = document.getElementById('regPassword');
-
-                    const name = nameInput ? nameInput.value.trim() : 'User';
-                    let email = emailInput ? emailInput.value.trim() : '';
-                    const password = passInput ? passInput.value : '';
-
-                    if (!email) {
-                        alert('Please enter an email address.');
-                        return;
-                    }
-
-                    if (!email.includes('@')) email = email + '@gmail.com';
-
-                    let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
-                    let existingUser = users.find(u => u.email === email);
-
-                    if (existingUser) {
-                        alert('User ' + email + ' is already registered! Please log in.');
-                        switchTab('login');
-                        return;
-                    }
-
-                    users.push({ name: name, email: email, password: password });
-                    localStorage.setItem('rentEaseUsers', JSON.stringify(users));
-
-                    alert('Success! Profile created for ' + name + ' (' + email + '). You can now log in.');
-
-                    if (emailInput) emailInput.value = '@gmail.com';
-                    if (passInput) passInput.value = '';
-                    switchTab('login');
-                });
-            }
-
-            if (loginForm) {
-                loginForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const emailInput = document.getElementById('loginEmail');
-                    const passInput = document.getElementById('loginPassword');
-
-                    let email = emailInput ? emailInput.value.trim() : '';
-                    const password = passInput ? passInput.value : '';
-
-                    if (!email.includes('@')) email += '@gmail.com';
-
-                    let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
-                    let validUser = users.find(u => u.email === email && u.password === password);
-
-                    if (validUser) {
-                        alert('Welcome back, ' + validUser.name + '! Logged in successfully.');
-                        
-                        const authCard = document.getElementById('auth-section');
-                        if (authCard) {
-                            authCard.innerHTML = '<div style="text-align:center; padding: 1.8rem; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; color: #ffffff; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);"><h3>✔ Logged In as ' + validUser.name + ' (' + validUser.email + ')</h3><p style="color:#f0f0f0; margin-top:5px;">Select products below to start renting.</p></div>';
+                            authCard.innerHTML = '<div style="text-align:center; padding: 1.8rem; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; color: #ffffff; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);"><h3>✔ Logged In as ' + validUser.name + ' (' + validUser.email + ')</h3><p style="color:#f0f0f0; margin-top:5px;">Browse available items below and click "Select for Rent".</p></div>';
                         }
 
                         window.location.hash = '#catalog';
@@ -795,23 +463,6 @@
             window.location.hash = '#checkout';
         }
 
-        function handleCheckout(e) {
-            e.preventDefault();
-            alert('Order confirmed! Delivery scheduled successfully.');
-        }
-
-        function handleService(e) {
-            e.preventDefault();
-            alert('Service request submitted successfully.');
-        }
-
-        function handleAddInventory(e) {
-            e.preventDefault();
-            alert('New inventory product added to catalog successfully.');
-        }
-    </script>
-</body>
-</html>
         function handleCheckout(e) {
             e.preventDefault();
             alert('Order confirmed! Delivery scheduled successfully.');
