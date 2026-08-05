@@ -49,7 +49,7 @@
         .auth-card {
             background: #fff;
             padding: 2rem;
-            max-width: 450px;
+            max-width: 500px;
             margin: 2rem auto;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -59,22 +59,46 @@
             display: flex;
             margin-bottom: 1.5rem;
             border-bottom: 2px solid #eee;
+            gap: 5px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.6rem 0.3rem;
             background: none;
             border: none;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: #777;
             cursor: pointer;
+            text-align: center;
         }
 
         .tab-btn.active {
             color: #27ae60;
             border-bottom: 3px solid #27ae60;
+        }
+
+        .sub-tab-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .sub-tab-btn {
+            padding: 0.3rem 0.8rem;
+            border: 1px solid #27ae60;
+            background: #fff;
+            color: #27ae60;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .sub-tab-btn.active {
+            background: #27ae60;
+            color: #fff;
         }
 
         .form-group {
@@ -163,40 +187,47 @@
 
     <div class="container">
         
-        <!-- User Authentication Card (Login & Register) -->
+        <!-- Role-Based Authentication Card -->
         <div class="auth-card" id="auth-section">
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                <button class="tab-btn active" onclick="switchRole('user')">User</button>
+                <button class="tab-btn" onclick="switchRole('vendor')">Vendor</button>
+                <button class="tab-btn" onclick="switchRole('admin')">Admin</button>
             </div>
 
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form active">
+            <!-- User Sub-Tabs (Login / Register) -->
+            <div class="sub-tab-buttons" id="userSubTabs">
+                <button class="sub-tab-btn active" onclick="switchUserTab('login')">Login</button>
+                <button class="sub-tab-btn" onclick="switchUserTab('register')">Register</button>
+            </div>
+
+            <!-- 1. User Login Form -->
+            <form id="userLoginForm" class="auth-form active">
                 <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
+                    <label for="userLoginEmail">User Email Address</label>
                     <input 
                         type="text" 
-                        id="loginEmail" 
+                        id="userLoginEmail" 
                         value="@gmail.com" 
                         onfocus="setCursorToStart(this)" 
                         required
                     >
                 </div>
                 <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    <label for="userLoginPassword">Password</label>
+                    <input type="password" id="userLoginPassword" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn">User Login</button>
             </form>
 
-            <!-- Registration Form -->
-            <form id="registerForm" class="auth-form">
+            <!-- 2. User Registration Form -->
+            <form id="userRegisterForm" class="auth-form">
                 <div class="form-group">
                     <label for="regName">Full Name</label>
                     <input type="text" id="regName" placeholder="Enter full name" required>
                 </div>
                 <div class="form-group">
-                    <label for="regEmail">Email Address</label>
+                    <label for="regEmail">User Email Address</label>
                     <input 
                         type="text" 
                         id="regEmail" 
@@ -209,7 +240,45 @@
                     <label for="regPassword">Password</label>
                     <input type="password" id="regPassword" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn">Register</button>
+                <button type="submit" class="btn">Register Account</button>
+            </form>
+
+            <!-- 3. Vendor Login Form -->
+            <form id="vendorLoginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="vendorEmail">Vendor Business Email</label>
+                    <input 
+                        type="text" 
+                        id="vendorEmail" 
+                        value="@gmail.com" 
+                        onfocus="setCursorToStart(this)" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="vendorPassword">Vendor Password</label>
+                    <input type="password" id="vendorPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn" style="background:#e67e22;">Vendor Login</button>
+            </form>
+
+            <!-- 4. Admin Login Form -->
+            <form id="adminLoginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="adminEmail">Admin Email</label>
+                    <input 
+                        type="text" 
+                        id="adminEmail" 
+                        value="@gmail.com" 
+                        onfocus="setCursorToStart(this)" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Admin Secret Key / Password</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn" style="background:#c0392b;">Admin Login</button>
             </form>
         </div>
 
@@ -250,24 +319,48 @@
     </div>
 
     <script>
-        // Toggle between Login and Register tabs
-        function switchTab(tab) {
+        // Switch main roles: User, Vendor, Admin
+        function switchRole(role) {
             const tabs = document.querySelectorAll('.tab-btn');
             const forms = document.querySelectorAll('.auth-form');
+            const userSubTabs = document.getElementById('userSubTabs');
 
             tabs.forEach(t => t.classList.remove('active'));
             forms.forEach(f => f.classList.remove('active'));
 
-            if (tab === 'login') {
+            if (role === 'user') {
                 tabs[0].classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
-            } else {
+                userSubTabs.style.display = 'flex';
+                document.getElementById('userLoginForm').classList.add('active');
+            } else if (role === 'vendor') {
                 tabs[1].classList.add('active');
-                document.getElementById('registerForm').classList.add('active');
+                userSubTabs.style.display = 'none';
+                document.getElementById('vendorLoginForm').classList.add('active');
+            } else if (role === 'admin') {
+                tabs[2].classList.add('active');
+                userSubTabs.style.display = 'none';
+                document.getElementById('adminLoginForm').classList.add('active');
             }
         }
 
-        // Sets cursor position before @gmail.com when clicking the input
+        // Switch between User Login and Register sub-tabs
+        function switchUserTab(tab) {
+            const subBtns = document.querySelectorAll('.sub-tab-btn');
+            subBtns.forEach(b => b.classList.remove('active'));
+
+            document.getElementById('userLoginForm').classList.remove('active');
+            document.getElementById('userRegisterForm').classList.remove('active');
+
+            if (tab === 'login') {
+                subBtns[0].classList.add('active');
+                document.getElementById('userLoginForm').classList.add('active');
+            } else {
+                subBtns[1].classList.add('active');
+                document.getElementById('userRegisterForm').classList.add('active');
+            }
+        }
+
+        // Sets cursor position before @gmail.com when clicking any email input
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => {
@@ -276,20 +369,33 @@
             }
         }
 
-        // Handle Login Submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Handlers for form submissions
+        document.getElementById('userLoginForm').addEventListener('submit', e => {
             e.preventDefault();
-            let email = document.getElementById('loginEmail').value.trim();
+            let email = document.getElementById('userLoginEmail').value.trim();
             if (!email.includes('@')) email += '@gmail.com';
-            alert('Welcome back! Logged in as: ' + email);
+            alert('User logged in as: ' + email);
         });
 
-        // Handle Registration Submission
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('userRegisterForm').addEventListener('submit', e => {
             e.preventDefault();
             let email = document.getElementById('regEmail').value.trim();
             if (!email.includes('@')) email += '@gmail.com';
-            alert('Profile created successfully for: ' + email);
+            alert('User profile registered for: ' + email);
+        });
+
+        document.getElementById('vendorLoginForm').addEventListener('submit', e => {
+            e.preventDefault();
+            let email = document.getElementById('vendorEmail').value.trim();
+            if (!email.includes('@')) email += '@gmail.com';
+            alert('Vendor dashboard accessed for: ' + email);
+        });
+
+        document.getElementById('adminLoginForm').addEventListener('submit', e => {
+            e.preventDefault();
+            let email = document.getElementById('adminEmail').value.trim();
+            if (!email.includes('@')) email += '@gmail.com';
+            alert('Admin panel accessed for: ' + email);
         });
     </script>
 </body>
