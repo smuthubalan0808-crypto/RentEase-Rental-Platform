@@ -132,14 +132,33 @@
         .product-name { font-size: 0.95rem; font-weight: 800; margin: 0.2rem 0; color: #0f172a; }
         .product-price { font-size: 1.15rem; font-weight: 900; color: #059669; }
         .add-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none; padding: 0.6rem; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
-        .add-btn:hover { opacity: 0.9; }
+
+        /* Maintenance Report Hub Section */
+        .maintenance-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-top: 6px solid #059669;
+        }
+        .maintenance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+        
+        .ticket-card-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid #4f46e5;
+        }
 
         /* Admin & Vendor Section */
         .admin-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 2rem;
-            margin-top: 2.5rem;
+            margin-top: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             border-top: 6px solid #4f46e5;
         }
@@ -156,7 +175,6 @@
             outline: none;
             background: #f8fafc;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #4f46e5; background: #fff; }
 
         .btn-admin {
             background: #1e293b;
@@ -311,12 +329,9 @@
             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         }
 
-        .ticket-tracker { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 1.5rem; margin-top: 2rem; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
-        .ticket-tracker h3 { color: #0f172a; font-weight: 900; }
-
         @media (max-width: 768px) {
             .grid-categories { grid-template-columns: repeat(3, 1fr); }
-            .admin-grid { grid-template-columns: 1fr; }
+            .admin-grid, .maintenance-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -386,14 +401,51 @@
             <!-- Dynamic Items Auto Loaded Below -->
         </div>
 
-        <!-- Service Ticket Tracker -->
-        <div class="ticket-tracker">
-            <h3>Service Ticket & Maintenance Lookup</h3>
-            <div style="display: flex; gap: 8px; margin-top: 0.8rem;">
-                <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.7rem; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none;">
-                <button onclick="searchTicket()" style="padding: 0.7rem 1.2rem; background: #4f46e5; color: #fff; border:none; border-radius: 8px; font-weight: bold; cursor: pointer;">Check Status</button>
+        <!-- MAINTENANCE REPORT & SERVICE TICKET HUB -->
+        <div class="maintenance-section" id="maintenanceSection">
+            <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a;">🛠 Maintenance & Repair Report Hub</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Submit new repair requests, inspect damage claims, and lookup active service tickets</p>
+            
+            <div class="maintenance-grid">
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">1. Submit Maintenance Request</h3>
+                    <form id="maintenanceForm" onsubmit="handleTicketSubmit(event)">
+                        <div class="form-group">
+                            <label>Renter Name & ID</label>
+                            <input type="text" id="mName" placeholder="e.g. Rahul Sharma (REN-502)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Rented Item & Issue Category</label>
+                            <select id="mIssue" required>
+                                <option value="Refrigerator Cooling Issue">Refrigerator Cooling Issue</option>
+                                <option value="Sofa Fabric Damage / Tear">Sofa Fabric Damage / Tear</option>
+                                <option value="Bed Frame / Slat Repair">Bed Frame / Slat Repair</option>
+                                <option value="Washing Machine Drainage Error">Washing Machine Drainage Error</option>
+                                <option value="General Scheduled Maintenance">General Scheduled Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Detailed Description</label>
+                            <textarea id="mDesc" rows="2" placeholder="Describe the maintenance or damage issue..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-admin" style="background: #059669;">Raise Service Ticket</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Live Ticket & Report Lookup</h3>
+                    <div style="display: flex; gap: 8px; margin-bottom: 1rem;">
+                        <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.7rem; border: 1.5px solid #cbd5e1; border-radius: 10px; outline: none; background: #fff;">
+                        <button onclick="searchTicket()" style="padding: 0.7rem 1.2rem; background: #4f46e5; color: #fff; border:none; border-radius: 10px; font-weight: bold; cursor: pointer;">Lookup</button>
+                    </div>
+                    <div id="ticketResultArea">
+                        <div class="ticket-card-item">
+                            <p style="font-weight: 800; color: #047857;">Sample Ticket: TKT-1001 (Active)</p>
+                            <p style="font-size: 0.85rem; color: #475569;">Issue: Refrigerator Cooling Check & Gas Refill. Assigned to technician.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
         </div>
 
         <!-- ADMIN & VENDOR FEATURES SECTION -->
@@ -433,7 +485,7 @@
                 </div>
 
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Logistics & Analytics Overview</h3>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Logistics & Maintenance Analytics</h3>
                     
                     <div class="analytics-card">
                         <h4>Total Active Rentals & Orders</h4>
@@ -447,7 +499,7 @@
 
                     <div class="analytics-card">
                         <h4>Damage Claims & Maintenance Tickets</h4>
-                        <div class="value" style="color: #eab308;">3 Pending Maintenance Tickets</div>
+                        <div class="value" id="ticketCountDisplay" style="color: #eab308;">3 Pending Maintenance Tickets</div>
                     </div>
 
                     <div class="analytics-card">
@@ -784,6 +836,50 @@
             document.getElementById('adminAddProductForm').reset();
         }
 
+        function handleTicketSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('mName').value;
+            const issue = document.getElementById('mIssue').value;
+            const desc = document.getElementById('mDesc').value;
+
+            const newId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
+            
+            tickets.push({
+                id: newId,
+                name: name,
+                response: `Issue: ${issue} - ${desc} (Status: In Progress / Technicians Assigned)`
+            });
+            localStorage.setItem('rentEaseTickets', JSON.stringify(tickets));
+
+            alert(`Maintenance Ticket Created Successfully! Your Ticket ID is ${newId}. You can look it up anytime.`);
+            document.getElementById('maintenanceForm').reset();
+            
+            // Update ticket count display
+            document.getElementById('ticketCountDisplay').textContent = `${tickets.length + 3} Pending Maintenance Tickets`;
+        }
+
+        function searchTicket() {
+            const id = document.getElementById('checkTicketId').value.trim().toUpperCase();
+            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [
+                { id: "TKT-1001", response: "Refrigerator Cooling Check & Gas Refill. Assigned to technician." },
+                { id: "TKT-1002", response: "Sofa Fabric Inspection Scheduled for Thursday." }
+            ];
+            let found = tickets.find(t => t.id === id);
+            const result = document.getElementById('ticketResultArea');
+            if (found) {
+                result.innerHTML = `<div class="ticket-card-item" style="border-left-color: #059669;">
+                    <p style="font-weight: 800; color: #047857;">✔ Ticket Found (${found.id})</p>
+                    <p style="font-size: 0.85rem; color: #475569;">${found.response}</p>
+                </div>`;
+            } else {
+                result.innerHTML = `<div class="ticket-card-item" style="border-left-color: #dc2626;">
+                    <p style="font-weight: 800; color: #b91c1c;">✖ Ticket ID Not Found</p>
+                    <p style="font-size: 0.85rem; color: #475569;">Try looking up TKT-1001 or submit a new ticket on the left.</p>
+                </div>`;
+            }
+        }
+
         function openLocationModal() { document.getElementById('locationModal').classList.remove('hidden'); }
         function closeModal(locName) {
             document.getElementById('locationModal').classList.add('hidden');
@@ -840,23 +936,6 @@
                     }
                 );
             } else { alert("Geolocation not supported by browser."); }
-        }
-
-        function searchTicket() {
-            const id = document.getElementById('checkTicketId').value.trim().toUpperCase();
-            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
-            let found = tickets.find(t => t.id === id);
-            const result = document.getElementById('ticketResultArea');
-            if (found) {
-                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #059669; font-size:0.9rem;">
-                    <p style="color:#047857;"><strong>✔ Responded</strong> (${found.id})</p>
-                    <p><strong>Response:</strong> ${found.response}</p>
-                </div>`;
-            } else {
-                result.innerHTML = `<div style="background:#fef2f2; padding:0.8rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.9rem;">
-                    <p style="color:#b91c1c;">✖ Ticket ID Not Found (e.g. try TKT-1001 or add via Admin)</p>
-                </div>`;
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
