@@ -22,8 +22,9 @@
         .logo { font-size: 1.8rem; font-weight: 800; color: #00d2ff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
         .location-picker-container { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .location-picker { background: #ffffff; color: #1e3c72; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; cursor: pointer; outline: none; }
-        
+        .location-picker, .location-input-custom { background: #ffffff; color: #1e3c72; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; outline: none; }
+        .location-input-custom { display: none; width: 140px; }
+
         nav a { color: #ffffff; text-decoration: none; margin-left: 15px; font-weight: 600; transition: color 0.3s; }
         nav a:hover { color: #00d2ff; }
 
@@ -105,7 +106,6 @@
             <span>🇮🇳 State:</span>
             <select class="location-picker" id="stateSelect" onchange="loadDistricts(this.value)">
                 <option value="">-- Select State / UT --</option>
-                <!-- 28 States -->
                 <option value="Andhra Pradesh">Andhra Pradesh</option>
                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                 <option value="Assam">Assam</option>
@@ -134,7 +134,6 @@
                 <option value="Uttar Pradesh">Uttar Pradesh</option>
                 <option value="Uttarakhand">Uttarakhand</option>
                 <option value="West Bengal">West Bengal</option>
-                <!-- 8 Union Territories -->
                 <option value="Andaman & Nicobar">Andaman & Nicobar</option>
                 <option value="Chandigarh">Chandigarh</option>
                 <option value="Dadra Nagar Haveli & Daman Diu">Dadra & Nagar Haveli</option>
@@ -146,9 +145,11 @@
             </select>
 
             <span>District:</span>
-            <select class="location-picker" id="districtSelect" onchange="updateLocationBanner()">
+            <select class="location-picker" id="districtSelect" onchange="checkCustomDistrict()">
                 <option value="">-- Select District --</option>
             </select>
+
+            <input type="text" class="location-input-custom" id="customDistrictInput" placeholder="Enter District" oninput="updateLocationBanner()">
         </div>
         <nav>
             <a href="#catalog">Catalog</a>
@@ -381,7 +382,7 @@
                     <div style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); padding: 1.2rem; border-radius: 8px; margin-top: 1rem; color: #2c3e50; font-weight: 600;">
                         <p><strong>Active Subscriptions:</strong> 124 units</p>
                         <p><strong>Monthly Recurring Revenue:</strong> ₹98,500</p>
-                        <p><strong>All-India Coverage:</strong> 28 States & 8 UTs</p>
+                        <p><strong>All-India Coverage:</strong> 28 States, 8 UTs & All Districts</p>
                         <p><strong>Delivery SLA:</strong> 24-48 Hours</p>
                     </div>
                 </div>
@@ -391,68 +392,68 @@
     </div>
 
     <script>
-        // District Data Mapping for all major Indian States & Union Territories
         const districtData = {
-            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Vellore", "Thanjavur", "Kanchipuram", "Dindigul", "Tuticorin", "Kanyakumari", "Nilgiris", "Karur"],
-            "Karnataka": ["Bengaluru Urban", "Bengaluru Rural", "Mysuru", "Mangaluru (Dakshina Kannada)", "Hubballi-Dharwad", "Belagavi", "Kalaburagi", "Tumakuru", "Shivamogga", "Udupi"],
-            "Maharashtra": ["Mumbai City", "Mumbai Suburban", "Pune", "Thane", "Nagpur", "Nashik", "Chhatrapati Sambhajinagar (Aurangabad)", "Solapur", "Amravati", "Kolhapur"],
-            "Kerala": ["Thiruvananthapuram", "Kochi (Ernakulam)", "Kozhikode", "Thrissur", "Kollam", "Kottayam", "Palakkad", "Kannur", "Alappuzha", "Wayanad"],
-            "Telangana": ["Hyderabad", "Medchal-Malkajgiri", "Rangareddy", "Warangal", "Nizamabad", "Khammam", "Karimnagar", "Mahbubnagar"],
-            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada (NTR)", "Guntur", "Tirupati", "Kakinada", "Kurnool", "Nellore", "Anantapur", "Srikakulam", "Kadapa"],
-            "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
-            "Uttar Pradesh": ["Lucknow", "Noida (Gautam Buddha Nagar)", "Ghaziabad", "Kanpur", "Varanasi", "Prayagraj", "Agra", "Meerut", "Gorakhpur", "Bareilly"],
-            "West Bengal": ["Kolkata", "Howrah", "North 24 Parganas", "South 24 Parganas", "Hooghly", "Darjeeling", "Siliguri", "Paschim Bardhaman", "Murshidabad"],
-            "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Bhavnagar", "Jamnagar", "Junagadh", "Anand"],
-            "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Bhilwara", "Alwar", "Sikar"],
-            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali (SAS Nagar)", "Bathinda", "Pathankot"],
-            "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Karnal", "Hisar", "Rohtak", "Panchkula"],
-            "Madhya Pradesh": ["Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Sagar", "Rewa"],
-            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Purnia", "Rohtas"],
-            "Odisha": ["Khurda (Bhubaneswar)", "Cuttack", "Ganjam", "Sundargarh (Rourkela)", "Puri", "Sambalpur", "Balasore"],
-            "Assam": ["Kamrup Metropolitan (Guwahati)", "Dibrugarh", "Silchar (Cachar)", "Jorhat", "Nagaon", "Tinsukia"],
-            "Jharkhand": ["Ranchi", "East Singhbhum (Jamshedpur)", "Dhanbad", "Bokaro", "Hazaribagh"],
-            "Chhattisgarh": ["Raipur", "Durg (Bhilai)", "Bilaspur", "Korba", "Rajnandgaon"],
-            "Uttarakhand": ["Dehradun", "Haridwar", "Nainital", "Udham Singh Nagar (Haldwani)"],
-            "Himachal Pradesh": ["Shimla", "Kangra (Dharamshala)", "Mandi", "Solan", "Kullu"],
-            "Goa": ["North Goa (Panaji)", "South Goa (Margao)"],
-            "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"],
-            "Jammu & Kashmir": ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Udhampur"],
-            "Ladakh": ["Leh", "Kargil"],
-            "Chandigarh": ["Chandigarh"],
-            "Andaman & Nicobar": ["South Andaman (Port Blair)", "North & Middle Andaman", "Nicobar"],
-            "Dadra Nagar Haveli & Daman Diu": ["Daman", "Diu", "Dadra & Nagar Haveli"],
-            "Lakshadweep": ["Kavaratti", "Agatti"],
-            "Tripura": ["West Tripura (Agartala)", "Gomati", "North Tripura"],
-            "Meghalaya": ["East Khasi Hills (Shillong)", "West Garo Hills"],
-            "Manipur": ["Imphal East", "Imphal West", "Churachandpur"],
-            "Nagaland": ["Kohima", "Dimapur"],
-            "Mizoram": ["Aizawl", "Lunglei"],
-            "Arunachal Pradesh": ["Papum Pare (Itanagar)", "Changlang"],
-            "Sikkim": ["East Sikkim (Gangtok)", "West Sikkim"]
+            "Tamil Nadu": ["Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupathur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar"],
+            "Karnataka": ["Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir"],
+            "Maharashtra": ["Ahmednagar", "Akola", "Amravati", "Chhatrapati Sambhajinagar", "Bhandara", "Beed", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Dharashiv", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal"],
+            "Kerala": ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"],
+            "Telangana": ["Adilabad", "Bhadradri Kothagudem", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalpally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Kumuram Bheem Asifabad", "Mahabubabad", "Mahbubnagar", "Mancherial", "Medak", "Medchal-Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal", "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Rangareddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad", "Wanaparthy", "Warangal", "Hanamkonda", "Yadadri Bhuvanagiri"],
+            "Andhra Pradesh": ["Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Annamayya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kakinada", "Konaseema", "Kornool", "Nandyal", "NTR (Vijayawada)", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Srikakulam", "Sri Potti Sriramulu Nellore", "Sri Sathya Sai", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
+            "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "Shahdara", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
+            "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar (Noida)", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"],
+            "West Bengal": ["Alipurduar", "Bankura", "Paschim Bardhaman", "Purba Bardhaman", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Medinipur", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
+            "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"],
+            "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur"]
         };
 
         function loadDistricts(selectedState) {
             const districtDropdown = document.getElementById('districtSelect');
+            const customInput = document.getElementById('customDistrictInput');
             districtDropdown.innerHTML = '<option value="">-- Select District --</option>';
+            customInput.style.display = 'none';
+            customInput.value = '';
 
-            if (selectedState && districtData[selectedState]) {
-                districtData[selectedState].forEach(district => {
-                    let option = document.createElement('option');
-                    option.value = district;
-                    option.textContent = district;
-                    districtDropdown.appendChild(option);
-                });
+            if (selectedState) {
+                if (districtData[selectedState]) {
+                    districtData[selectedState].forEach(district => {
+                        let option = document.createElement('option');
+                        option.value = district;
+                        option.textContent = district;
+                        districtDropdown.appendChild(option);
+                    });
+                }
+                let otherOpt = document.createElement('option');
+                otherOpt.value = "Other";
+                otherOpt.textContent = "➕ Other / Enter District Manually";
+                districtDropdown.appendChild(otherOpt);
+            }
+            updateLocationBanner();
+        }
+
+        function checkCustomDistrict() {
+            const districtDropdown = document.getElementById('districtSelect');
+            const customInput = document.getElementById('customDistrictInput');
+
+            if (districtDropdown.value === 'Other') {
+                customInput.style.display = 'inline-block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+                customInput.value = '';
             }
             updateLocationBanner();
         }
 
         function updateLocationBanner() {
             const state = document.getElementById('stateSelect').value;
-            const district = document.getElementById('districtSelect').value;
+            const districtSelect = document.getElementById('districtSelect').value;
+            const customDistrict = document.getElementById('customDistrictInput').value.trim();
             const checkoutLoc = document.getElementById('checkoutLocation');
 
-            if (state && district) {
-                checkoutLoc.value = district + ', ' + state + ', India';
+            let finalDistrict = (districtSelect === 'Other') ? customDistrict : districtSelect;
+
+            if (state && finalDistrict) {
+                checkoutLoc.value = finalDistrict + ', ' + state + ', India';
             } else if (state) {
                 checkoutLoc.value = state + ', India';
             } else {
