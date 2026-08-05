@@ -108,22 +108,6 @@
         .product-price { font-size: 1.1rem; font-weight: 800; color: #10b981; }
         .add-btn { background: #0072ff; color: #fff; border: none; padding: 0.5rem; width: 100%; border-radius: 6px; font-weight: bold; margin-top: 0.6rem; cursor: pointer; }
 
-        /* Support & Maintenance Section */
-        .support-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
-        .support-box { background: #fff; border-radius: 12px; padding: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .support-box h3 { font-size: 1.1rem; color: #1e293b; margin-bottom: 0.8rem; }
-        .support-form-group { margin-bottom: 0.7rem; }
-        .support-form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 0.2rem; }
-        .support-form-group input, .support-form-group textarea, .support-form-group select {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            outline: none;
-        }
-        .btn-support { background: #0072ff; color: #fff; border: none; padding: 0.6rem; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 0.4rem; }
-
         /* Admin & Vendor Section */
         .admin-section {
             background: #ffffff;
@@ -291,9 +275,11 @@
             margin-top: 0.5rem;
         }
 
+        .ticket-tracker { background: #fff; border-radius: 12px; padding: 1rem; margin-top: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
         @media (max-width: 768px) {
             .grid-categories { grid-template-columns: repeat(3, 1fr); }
-            .admin-grid, .support-grid { grid-template-columns: 1fr; }
+            .admin-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -363,44 +349,14 @@
             <!-- Dynamic Items Auto Loaded Below -->
         </div>
 
-        <!-- Support, Maintenance Request & Ticket Tracker Section -->
-        <div class="support-grid">
-            <!-- Raise Ticket Form -->
-            <div class="support-box">
-                <h3>Raise Maintenance / Support Ticket</h3>
-                <form id="raiseTicketForm" onsubmit="handleRaiseTicket(event)">
-                    <div class="support-form-group">
-                        <label>Your Name</label>
-                        <input type="text" id="ticketUserName" placeholder="John Doe" required>
-                    </div>
-                    <div class="support-form-group">
-                        <label>Issue Type</label>
-                        <select id="ticketIssueType" required>
-                            <option value="Maintenance Request">Maintenance / Repair Support</option>
-                            <option value="Damage Claim">Damage Claim / Return</option>
-                            <option value="Delivery Delay">Delivery / Pickup Schedule Issue</option>
-                        </select>
-                    </div>
-                    <div class="support-form-group">
-                        <label>Describe Issue</label>
-                        <textarea id="ticketDesc" rows="2" placeholder="Describe the issue with your rental item..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-support">Submit Complaint / Ticket</button>
-                </form>
+        <!-- Service Ticket Tracker -->
+        <div class="ticket-tracker">
+            <h3>Service Ticket & Maintenance Lookup</h3>
+            <div style="display: flex; gap: 8px; margin-top: 0.8rem;">
+                <input type="text" id="checkTicketId" placeholder="Enter Ticket ID (e.g. TKT-1001)" style="flex:1; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <button onclick="searchTicket()" style="padding: 0.6rem 1rem; background: #334155; color: #fff; border:none; border-radius: 6px; font-weight: bold; cursor: pointer;">Check Status</button>
             </div>
-
-            <!-- Track Ticket Status -->
-            <div class="support-box">
-                <h3>Track Ticket Status</h3>
-                <div class="support-form-group">
-                    <label>Enter Ticket ID</label>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="text" id="checkTicketId" placeholder="e.g. TKT-1001" style="flex:1;">
-                        <button type="button" onclick="searchTicket()" style="padding: 0.6rem 0.9rem; background: #334155; color: #fff; border:none; border-radius: 6px; font-weight: bold; cursor: pointer;">Check</button>
-                    </div>
-                </div>
-                <div id="ticketResultArea" style="margin-top: 0.6rem;"></div>
-            </div>
+            <div id="ticketResultArea" style="margin-top: 0.8rem;"></div>
         </div>
 
         <!-- ADMIN & VENDOR FEATURES SECTION -->
@@ -433,7 +389,7 @@
                         </div>
                         <div class="form-group">
                             <label>Stock Availability & Service Area</label>
-                            <input type="text" placeholder="e.g. 15 Units - Tamil Nadu & Karnataka" required>
+                            <input type="text" placeholder="e.g. 15 Units - Nationwide Coverage" required>
                         </div>
                         <button type="submit" class="btn-admin">Add Item to Catalog</button>
                     </form>
@@ -458,8 +414,8 @@
                     </div>
 
                     <div class="analytics-card">
-                        <h4>Active Service Cities</h4>
-                        <div class="value" style="color: #10b981;">Multi-City Coverage Active</div>
+                        <h4>Active Service Regions</h4>
+                        <div class="value" style="color: #10b981;">Pan-India (All States & UTs)</div>
                     </div>
                 </div>
             </div>
@@ -512,7 +468,7 @@
     <div class="modal-overlay hidden" id="locationModal">
         <div class="location-modal">
             <div class="modal-title">Choose location</div>
-            <div class="modal-sub">Please choose any of the below options to proceed.</div>
+            <div class="modal-sub">Select your state and district to check product availability.</div>
 
             <div class="form-group">
                 <label>Enter area, street name</label>
@@ -522,15 +478,7 @@
             <div class="form-group">
                 <label>State / UT</label>
                 <select id="stateSelect" onchange="loadDistricts(this.value)">
-                    <option value="">Select State</option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Maharashtra">Maharashtra</option>
-                    <option value="Kerala">Kerala</option>
-                    <option value="Telangana">Telangana</option>
-                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                    <option value="Delhi">Delhi (NCT)</option>
-                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="">Select State / UT</option>
                 </select>
             </div>
 
@@ -592,6 +540,57 @@
             { id: 10, name: "2BHK Complete Home Furnishing Combo", category: "Packages", price: "1,299", img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80" }
         ];
 
+        // Comprehensive database covering all States and Union Territories of India with major districts
+        const districtData = {
+            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Kurnool", "Nellore", "Rajahmundry", "Kakinada", "Kadapa", "Anantapur"],
+            "Arunachal Pradesh": ["Itanagar", "Tawang", "Ziro", "Pasighat", "Namchang", "Bomdila"],
+            "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", "Tezpur"],
+            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Purnia", "Darbhanga", "Bihar Sharif", "Ara", "Begusarai", "Katihar"],
+            "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Durg", "Raigarh", "Jagdalpur", "Ambikapur"],
+            "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda", "Bicholim"],
+            "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Anand", "Navsari"],
+            "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Sonipat", "Panchkula"],
+            "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala", "Solan", "Mandi", "Kullu", "Bilaspur", "Chamba"],
+            "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih", "Ramgarh"],
+            "Karnataka": ["Bengaluru Urban", "Mysuru", "Mangaluru", "Hubballi-Dharwad", "Belagavi", "Kalaburagi", "Davanagere", "Ballari", "Vijayapura", "Shivamogga"],
+            "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Palakkad", "Alappuzha", "Kannur", "Kottayam", "Malappuram"],
+            "Madhya Pradesh": ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa"],
+            "Maharashtra": ["Mumbai City", "Mumbai Suburban", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Amravati", "Navi Mumbai"],
+            "Manipur": ["Imphal East", "Imphal West", "Thoubal", "Bishnupur", "Churachandpur", "Senapati"],
+            "Meghalaya": ["Shillong", "Tura", "Jowai", "Nongpoh", "Baghmara"],
+            "Mizoram": ["Aizawl", "Lunglei", "Champhai", "Serchhip", "Kolasib"],
+            "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha", "Zunheboto"],
+            "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Puri", "Balasore", "Bhadrak"],
+            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Pathankot", "Hoshiarpur", "Batala", "Moga"],
+            "Rajasthan": ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Udaipur", "Ajmer", "Bhilwara", "Alwar", "Sikar", "Pali"],
+            "Sikkim": ["Gangtok", "Namchi", "Gyalshing", "Mangan", "Singtam"],
+            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Vellore", "Thoothukudi", "Dindigul", "Thanjavur"],
+            "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Ramagundam", "Khammam", "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet"],
+            "Tripura": ["Agartala", "Udaipur", "Dharmanagar", "Kailashahar", "Belonia"],
+            "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Meerut", "Prayagraj", "Noida", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur"],
+            "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Nainital"],
+            "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Bardhaman", "Malda", "Baharampur", "Habra", "Kharagpur"],
+            "Andaman and Nicobar Islands": ["Port Blair", "Car Nicobar", "Mayabunder"],
+            "Chandigarh": ["Chandigarh"],
+            "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu", "Silvassa"],
+            "Delhi (NCT)": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Central Delhi", "Shahdara"],
+            "Jammu and Kashmir": ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Kathua", "Udhampur", "Poonch", "Rajouri"],
+            "Ladakh": ["Leh", "Kargil"],
+            "Lakshadweep": ["Kavaratti", "Agatti", "Minicoy", "Andrott"],
+            "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"]
+        };
+
+        // Populate State dropdown dynamically on load
+        function initStates() {
+            const stateSelect = document.getElementById('stateSelect');
+            for (let state in districtData) {
+                let opt = document.createElement('option');
+                opt.value = state;
+                opt.textContent = state;
+                stateSelect.appendChild(opt);
+            }
+        }
+
         let selectedCategory = 'all';
 
         function renderProducts(items) {
@@ -647,31 +646,6 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
             renderProducts(filtered);
-        }
-
-        /* Raise Ticket Handler */
-        function handleRaiseTicket(e) {
-            e.preventDefault();
-            const name = document.getElementById('ticketUserName').value;
-            const issueType = document.getElementById('ticketIssueType').value;
-            const desc = document.getElementById('ticketDesc').value;
-
-            const randomId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
-            
-            let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
-            tickets.push({
-                id: randomId,
-                name: name,
-                type: issueType,
-                description: desc,
-                response: "Ticket received. Our support team is reviewing your request."
-            });
-            localStorage.setItem('rentEaseTickets', JSON.stringify(tickets));
-
-            alert('Ticket submitted successfully! Your Ticket ID is: ' + randomId);
-            document.getElementById('checkTicketId').value = randomId;
-            document.getElementById('raiseTicketForm').reset();
-            searchTicket();
         }
 
         /* User Login & Register Modal Logic */
@@ -776,17 +750,6 @@
             document.getElementById('adminAddProductForm').reset();
         }
 
-        const districtData = {
-            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
-            "Karnataka": ["Bengaluru Urban", "Mysuru", "Mangaluru", "Hubballi"],
-            "Maharashtra": ["Mumbai City", "Pune", "Thane", "Nagpur"],
-            "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode"],
-            "Telangana": ["Hyderabad", "Warangal", "Nizamabad"],
-            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"],
-            "Delhi": ["New Delhi", "South Delhi", "North Delhi"],
-            "Uttar Pradesh": ["Lucknow", "Noida", "Ghaziabad"]
-        };
-
         function openLocationModal() { document.getElementById('locationModal').classList.remove('hidden'); }
         function closeModal(locName) {
             document.getElementById('locationModal').classList.add('hidden');
@@ -832,7 +795,7 @@
                     function(position) {
                         const lat = position.coords.latitude.toFixed(2);
                         const lon = position.coords.longitude.toFixed(2);
-                        const locStr = `GPS (${lat}°, ${lon}°), Tamil Nadu`;
+                        const locStr = `GPS (${lat}°, ${lon}°), India`;
                         gpsText.textContent = "✔ Location set!";
                         gpsText.style.color = "#10b981";
                         setTimeout(() => { closeModal(locStr); }, 600);
@@ -851,19 +814,19 @@
             let found = tickets.find(t => t.id === id);
             const result = document.getElementById('ticketResultArea');
             if (found) {
-                result.innerHTML = `<div style="background:#ecfdf5; padding:0.6rem; border-radius:6px; border-left:4px solid #10b981; font-size:0.85rem;">
-                    <p style="color:#047857;"><strong>✔ Ticket (${found.id})</strong></p>
-                    <p><strong>Type:</strong> ${found.type}</p>
-                    <p><strong>Status:</strong> ${found.response}</p>
+                result.innerHTML = `<div style="background:#ecfdf5; padding:0.8rem; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
+                    <p style="color:#047857;"><strong>✔ Responded</strong> (${found.id})</p>
+                    <p><strong>Response:</strong> ${found.response}</p>
                 </div>`;
             } else {
-                result.innerHTML = `<div style="background:#fef2f2; padding:0.6rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.85rem;">
+                result.innerHTML = `<div style="background:#fef2f2; padding:0.8rem; border-radius:6px; border-left:4px solid #ef4444; font-size:0.9rem;">
                     <p style="color:#b91c1c;">✖ Ticket ID Not Found</p>
                 </div>`;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            initStates();
             renderProducts(products);
         });
     </script>
