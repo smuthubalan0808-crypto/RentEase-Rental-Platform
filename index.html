@@ -41,7 +41,7 @@
             border-radius: 20px;
             border: 1px solid #c7d2fe;
         }
-        .nav-icons { display: flex; gap: 12px; font-size: 1rem; cursor: pointer; align-items: center; }
+        .nav-icons { display: flex; gap: 10px; font-size: 1rem; cursor: pointer; align-items: center; flex-wrap: wrap; }
         .admin-link-btn { background: #1e293b; color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
         .user-auth-btn { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
@@ -341,7 +341,7 @@
                 📍 <span id="headerLocText">Select Location</span> ▾
             </div>
             <div class="nav-icons">
-                <button class="admin-link-btn" onclick="openAdminPortalModal()">Admin Portal</button>
+                <button class="admin-link-btn" onclick="openAdminPortalModal()">Admin / Vendor Portal</button>
                 <button class="user-auth-btn" id="userLoginHeaderBtn" onclick="openAuthModal()">👤 Login / Register</button>
             </div>
         </div>
@@ -359,7 +359,7 @@
             <button class="reset-filter-btn" id="resetBtn" onclick="filterCategory('all')">Show All Products</button>
         </div>
 
-        <!-- Interactive Category Grid including Washing Machine & TV -->
+        <!-- Interactive Category Grid -->
         <div class="grid-categories">
             <div class="cat-item" id="cat-Packages" onclick="filterCategory('Packages')">
                 <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Packages">
@@ -385,7 +385,7 @@
                 <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Sofas">
                 <div class="cat-title">Sofas</div>
             </div>
-            <div class="cat-item" id="cat-Dining" onclick="filterCategory('Dining Sets')">
+            <div class="cat-item" id="cat-Dining Sets" onclick="filterCategory('Dining Sets')">
                 <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=300&q=80" class="cat-img" alt="Dining Sets">
                 <div class="cat-title">Dining Sets</div>
             </div>
@@ -444,7 +444,7 @@
                 <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a;">Admin & Vendor Dashboard (Private Portal)</h2>
                 <button onclick="lockAdminPortal()" style="background:#ef4444; color:#fff; border:none; padding:0.4rem 0.8rem; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.8rem;">Lock / Exit Portal</button>
             </div>
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Inventory Management, Rental Pricing, Delivery Logistics & Maintenance Requests</p>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Inventory Management, Rental Pricing, Delivery Logistics & Vendor Approvals</p>
             
             <div class="admin-grid">
                 <div>
@@ -480,26 +480,14 @@
                 </div>
 
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Logistics & Analytics Overview</h3>
-                    
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e293b; font-weight: 800;">2. Vendor Registration Requests (Admin Approval)</h3>
+                    <div id="vendorRequestsList" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1rem; max-height:220px; overflow-y:auto; margin-bottom:1rem;">
+                        <p style="font-size:0.85rem; color:#64748b;">No pending vendor requests right now.</p>
+                    </div>
+
                     <div class="analytics-card">
                         <h4>Total Active Rentals & Orders</h4>
                         <div class="value">124 Units Subscribed</div>
-                    </div>
-
-                    <div class="analytics-card">
-                        <h4>Delivery & Pickup Schedules</h4>
-                        <div class="value" style="color: #0284c7;">8 Deliveries Scheduled Today</div>
-                    </div>
-
-                    <div class="analytics-card">
-                        <h4>Damage Claims & Maintenance Tickets</h4>
-                        <div class="value" style="color: #eab308;">3 Pending Maintenance Tickets</div>
-                    </div>
-
-                    <div class="analytics-card">
-                        <h4>Active Service Regions</h4>
-                        <div class="value" style="color: #059669;">Pan-India (All States & UTs)</div>
                     </div>
                 </div>
             </div>
@@ -507,22 +495,44 @@
 
     </div>
 
-    <!-- ADMIN / VENDOR LOGIN PIN MODAL (PRIVATE ACCESS) -->
+    <!-- ADMIN / VENDOR LOGIN & REGISTRATION MODAL (WITH ADMIN APPROVAL FLOW) -->
     <div class="modal-overlay hidden" id="adminLoginModal">
         <div class="modal-card">
             <span class="close-modal-btn" onclick="closeAdminPortalModal()">✕</span>
-            <div class="modal-title">Admin & Vendor Portal</div>
-            <div class="modal-sub">Enter secure portal credentials to access management controls.</div>
-            <form onsubmit="verifyAdminPin(event)">
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="portalLoginTab" onclick="switchPortalTab('login')">Login</button>
+                <button class="tab-btn" id="portalRegisterTab" onclick="switchPortalTab('register')">Vendor Register Request</button>
+            </div>
+
+            <!-- Admin/Vendor Login Form -->
+            <form id="portalLoginForm" class="auth-form active" onsubmit="verifyAdminPin(event)">
                 <div class="form-group">
-                    <label>Admin Username / ID</label>
+                    <label>Gmail / Admin ID</label>
                     <input type="text" id="adminUser" placeholder="admin@rentease.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Secure Password / PIN</label>
+                    <label>Password</label>
                     <input type="password" id="adminPin" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-submit-auth">Unlock Portal 🔐</button>
+                <button type="submit" class="btn-submit-auth">Login to Portal 🔐</button>
+            </form>
+
+            <!-- Vendor Registration Request Form (Requires Admin Approval) -->
+            <form id="portalRegisterForm" class="auth-form" onsubmit="submitVendorRequest(event)">
+                <div class="modal-sub" style="margin-bottom:0.8rem; font-size:0.8rem;">Submit your Gmail and password for Admin approval before registration is accepted.</div>
+                <div class="form-group">
+                    <label>Vendor Full Name</label>
+                    <input type="text" id="vName" placeholder="Vendor Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Gmail Address</label>
+                    <input type="email" id="vEmail" placeholder="vendor@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="vPass" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit-auth">Request Admin Approval 📨</button>
             </form>
         </div>
     </div>
@@ -828,6 +838,25 @@
             }
         }
 
+        function switchPortalTab(tab) {
+            const loginForm = document.getElementById('portalLoginForm');
+            const regForm = document.getElementById('portalRegisterForm');
+            const loginBtn = document.getElementById('portalLoginTab');
+            const regBtn = document.getElementById('portalRegisterTab');
+
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                regForm.classList.remove('active');
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+            } else {
+                loginForm.classList.remove('active');
+                regForm.classList.add('active');
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+            }
+        }
+
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
@@ -871,7 +900,7 @@
             }
         }
 
-        /* Private Admin Portal Security Logic */
+        /* Vendor & Admin Approval Logic */
         function openAdminPortalModal() {
             const isUnlocked = localStorage.getItem('rentEaseAdminUnlocked');
             if (isUnlocked === 'true') {
@@ -879,6 +908,7 @@
                 window.location.hash = '#adminSection';
             } else {
                 document.getElementById('adminLoginModal').classList.remove('hidden');
+                renderVendorRequests();
             }
         }
 
@@ -886,26 +916,89 @@
             document.getElementById('adminLoginModal').classList.add('hidden');
         }
 
+        function submitVendorRequest(e) {
+            e.preventDefault();
+            const name = document.getElementById('vName').value.trim();
+            const email = document.getElementById('vEmail').value.trim();
+            const pass = document.getElementById('vPass').value.trim();
+
+            let pending = JSON.parse(localStorage.getItem('rentEasePendingVendors')) || [];
+            pending.push({ name, email, pass });
+            localStorage.setItem('rentEasePendingVendors', JSON.stringify(pending));
+
+            alert('Registration request submitted successfully! Your Gmail & password are sent to Admin for approval.');
+            document.getElementById('portalRegisterForm').reset();
+            closeAdminPortalModal();
+        }
+
+        function renderVendorRequests() {
+            const container = document.getElementById('vendorRequestsList');
+            let pending = JSON.parse(localStorage.getItem('rentEasePendingVendors')) || [];
+
+            if (pending.length === 0) {
+                container.innerHTML = '<p style="font-size:0.85rem; color:#64748b;">No pending vendor requests right now.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            pending.forEach((v, index) => {
+                let item = document.createElement('div');
+                item.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#fff; padding:0.6rem; border-radius:8px; margin-bottom:0.5rem; border:1px solid #e2e8f0; font-size:0.85rem;";
+                item.innerHTML = `
+                    <div><strong>${v.name}</strong> (${v.email})</div>
+                    <button onclick="approveVendor(${index})" style="background:#059669; color:#fff; border:none; padding:0.3rem 0.7rem; border-radius:6px; font-weight:bold; cursor:pointer;">Approve</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function approveVendor(index) {
+            let pending = JSON.parse(localStorage.getItem('rentEasePendingVendors')) || [];
+            let approvedVendor = pending.splice(index, 1)[0];
+            localStorage.setItem('rentEasePendingVendors', JSON.stringify(pending));
+
+            let approvedList = JSON.parse(localStorage.getItem('rentEaseApprovedVendors')) || [];
+            approvedList.push(approvedVendor);
+            localStorage.setItem('rentEaseApprovedVendors', JSON.stringify(approvedList));
+
+            alert(`Vendor ${approvedVendor.name} approved successfully! They can now log into the portal.`);
+            renderVendorRequests();
+        }
+
         function verifyAdminPin(e) {
             e.preventDefault();
             const user = document.getElementById('adminUser').value.trim();
             const pin = document.getElementById('adminPin').value.trim();
 
+            // Check Master Admin
             if ((user === 'admin@rentease.com' || user === 'admin') && (pin === 'admin123' || pin === '1234')) {
                 localStorage.setItem('rentEaseAdminUnlocked', 'true');
                 closeAdminPortalModal();
                 document.getElementById('adminSection').classList.add('unlocked');
-                alert('Portal unlocked successfully!');
+                alert('Master Admin portal unlocked successfully!');
+                window.location.hash = '#adminSection';
+                return;
+            }
+
+            // Check Approved Vendors
+            let approvedList = JSON.parse(localStorage.getItem('rentEaseApprovedVendors')) || [];
+            let matchedVendor = approvedList.find(v => v.email === user && v.pass === pin);
+
+            if (matchedVendor) {
+                localStorage.setItem('rentEaseAdminUnlocked', 'true');
+                closeAdminPortalModal();
+                document.getElementById('adminSection').classList.add('unlocked');
+                alert(`Welcome Vendor ${matchedVendor.name}! Portal unlocked.`);
                 window.location.hash = '#adminSection';
             } else {
-                alert('Invalid Admin credentials! Access denied.');
+                alert('Login denied. Either incorrect credentials or your registration request is still pending Admin approval.');
             }
         }
 
         function lockAdminPortal() {
             localStorage.removeItem('rentEaseAdminUnlocked');
             document.getElementById('adminSection').classList.remove('unlocked');
-            alert('Admin portal locked securely.');
+            alert('Admin / Vendor portal locked securely.');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
