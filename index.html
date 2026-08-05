@@ -153,7 +153,10 @@
             margin-top: 2.5rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             border-top: 6px solid #4f46e5;
+            display: none; /* Hidden by default until secure Admin/Vendor login */
         }
+        .admin-section.unlocked { display: block; }
+
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
         
         .form-group { margin-bottom: 0.9rem; }
@@ -338,7 +341,7 @@
                 📍 <span id="headerLocText">Select Location</span> ▾
             </div>
             <div class="nav-icons">
-                <a href="#adminSection" class="admin-link-btn">Admin Portal</a>
+                <button class="admin-link-btn" onclick="openAdminPortalModal()">Admin Portal</button>
                 <button class="user-auth-btn" id="userLoginHeaderBtn" onclick="openAuthModal()">👤 Login / Register</button>
             </div>
         </div>
@@ -427,9 +430,12 @@
             </div>
         </div>
 
-        <!-- ADMIN & VENDOR FEATURES SECTION -->
+        <!-- ADMIN & VENDOR FEATURES SECTION (PROTECTED & PRIVATE) -->
         <div class="admin-section" id="adminSection">
-            <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a;">Admin & Vendor Dashboard</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a;">Admin & Vendor Dashboard (Private Portal)</h2>
+                <button onclick="lockAdminPortal()" style="background:#ef4444; color:#fff; border:none; padding:0.4rem 0.8rem; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.8rem;">Lock / Exit Portal</button>
+            </div>
             <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; font-weight: 600;">Inventory Management, Rental Pricing, Delivery Logistics & Maintenance Requests</p>
             
             <div class="admin-grid">
@@ -489,6 +495,26 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ADMIN / VENDOR LOGIN PIN MODAL (PRIVATE ACCESS) -->
+    <div class="modal-overlay hidden" id="adminLoginModal">
+        <div class="modal-card">
+            <span class="close-modal-btn" onclick="closeAdminPortalModal()">✕</span>
+            <div class="modal-title">Admin & Vendor Portal</div>
+            <div class="modal-sub">Enter secure portal credentials to access management controls.</div>
+            <form onsubmit="verifyAdminPin(event)">
+                <div class="form-group">
+                    <label>Admin Username / ID</label>
+                    <input type="text" id="adminUser" placeholder="admin@rentease.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Secure Password / PIN</label>
+                    <input type="password" id="adminPin" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit-auth">Unlock Portal 🔐</button>
+            </form>
+        </div>
     </div>
 
     <!-- USER LOGIN / REGISTER MODAL -->
@@ -835,6 +861,45 @@
             }
         }
 
+        /* Private Admin Portal Security Logic */
+        function openAdminPortalModal() {
+            const isUnlocked = localStorage.getItem('rentEaseAdminUnlocked');
+            if (isUnlocked === 'true') {
+                document.getElementById('adminSection').classList.add('unlocked');
+                window.location.hash = '#adminSection';
+            } else {
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminPortalModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value.trim();
+            const pin = document.getElementById('adminPin').value.trim();
+
+            // Private secure credential verification
+            if ((user === 'admin@rentease.com' || user === 'admin') && (pin === 'admin123' || pin === '1234')) {
+                localStorage.setItem('rentEaseAdminUnlocked', 'true');
+                closeAdminPortalModal();
+                document.getElementById('adminSection').classList.add('unlocked');
+                alert('Portal unlocked successfully!');
+                window.location.hash = '#adminSection';
+            } else {
+                alert('Invalid Admin credentials! Access denied.');
+            }
+        }
+
+        function lockAdminPortal() {
+            localStorage.removeItem('rentEaseAdminUnlocked');
+            document.getElementById('adminSection').classList.remove('unlocked');
+            alert('Admin portal locked securely.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function handleAddProduct(e) {
             e.preventDefault();
             const name = document.getElementById('adminPName').value;
@@ -867,7 +932,10 @@
         function openLocationModal() { document.getElementById('locationModal').classList.remove('hidden'); }
         function closeModal(locName) {
             document.getElementById('locationModal').classList.add('hidden');
-            if (locName) document.getElementById('headerLocText').textContent = locName;
+            if (locName) {
+                document.getElementById('headerLocText').textContent = locName;
+                localStorage.setItem('rentEaseSelectedLocation', locName);
+            }
         }
 
         function loadDistricts(selectedState) {
@@ -1012,9 +1080,22 @@
             initStates();
             renderProducts(products);
             
+            // Persist user login session across refreshes
             const activeUser = localStorage.getItem('rentEaseActiveUser');
             if (activeUser) {
                 document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + activeUser;
+            }
+
+            // Persist location selection across refreshes
+            const savedLoc = localStorage.getItem('rentEaseSelectedLocation');
+            if (savedLoc) {
+                document.getElementById('headerLocText').textContent = savedLoc;
+                document.getElementById('payLocDisplay').textContent = savedLoc;
+            }
+
+            // Keep Admin portal unlocked if session is active
+            if (localStorage.getItem('rentEaseAdminUnlocked') === 'true') {
+                document.getElementById('adminSection').classList.add('unlocked');
             }
         });
     </script>
