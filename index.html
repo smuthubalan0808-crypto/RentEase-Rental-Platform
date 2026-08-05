@@ -31,6 +31,7 @@
         .auth-form { display: none; }
         .auth-form.active { display: block; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .user-badge { display: none; background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; margin-bottom: 1rem; text-align: center; }
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -48,13 +49,17 @@
 
     <div class="container">
         
+        <!-- User Status Badge -->
+        <div id="userBadge" class="user-badge"></div>
+
         <!-- User Authentication Card -->
         <div class="card auth-card" id="auth-section">
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
             </div>
 
+            <!-- Login Form -->
             <form id="loginForm" class="auth-form active">
                 <div class="form-group">
                     <label for="loginEmail">Email Address</label>
@@ -67,6 +72,7 @@
                 <button type="submit" class="btn">Login</button>
             </form>
 
+            <!-- Registration Form -->
             <form id="registerForm" class="auth-form">
                 <div class="form-group">
                     <label for="regName">Full Name</label>
@@ -80,7 +86,7 @@
                     <label for="regPassword">Password</label>
                     <input type="password" id="regPassword" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn">Register</button>
+                <button type="submit" class="btn">Register Account</button>
             </form>
         </div>
 
@@ -216,25 +222,90 @@
     </div>
 
     <script>
+        // Toggle Login and Register tabs
         function switchTab(tab) {
             const tabs = document.querySelectorAll('.tab-btn');
             const forms = document.querySelectorAll('.auth-form');
             tabs.forEach(t => t.classList.remove('active'));
             forms.forEach(f => f.classList.remove('active'));
             if (tab === 'login') {
-                tabs[0].classList.add('active');
+                document.getElementById('loginTabBtn').classList.add('active');
                 document.getElementById('loginForm').classList.add('active');
             } else {
-                tabs[1].classList.add('active');
+                document.getElementById('registerTabBtn').classList.add('active');
                 document.getElementById('registerForm').classList.add('active');
             }
         }
 
+        // Auto-place cursor in email input before @gmail.com
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
             }
         }
+
+        // REAL REGISTRATION FUNCTIONALITY
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let name = document.getElementById('regName').value.trim();
+            let email = document.getElementById('regEmail').value.trim();
+            let password = document.getElementById('regPassword').value;
+
+            if (!email.includes('@')) email += '@gmail.com';
+
+            // Get existing users array from browser storage
+            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+
+            // Check if user already exists
+            let existingUser = users.find(u => u.email === email);
+            if (existingUser) {
+                alert('User with email "' + email + '" is already registered! Please log in.');
+                switchTab('login');
+                document.getElementById('loginEmail').value = email;
+                return;
+            }
+
+            // Save new user object
+            users.push({ name: name, email: email, password: password });
+            localStorage.setItem('rentEaseUsers', JSON.stringify(users));
+
+            alert('Account created successfully for ' + name + ' (' + email + ')!\n\nYou can now log in.');
+
+            // Clear inputs and open Login tab
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '@gmail.com';
+            document.getElementById('regPassword').value = '';
+            switchTab('login');
+            document.getElementById('loginEmail').value = email;
+        });
+
+        // REAL LOGIN FUNCTIONALITY
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let email = document.getElementById('loginEmail').value.trim();
+            let password = document.getElementById('loginPassword').value;
+
+            if (!email.includes('@')) email += '@gmail.com';
+
+            // Fetch stored users
+            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+            let validUser = users.find(u => u.email === email && u.password === password);
+
+            if (validUser) {
+                alert('Welcome back, ' + validUser.name + '! You are logged in successfully.');
+                
+                // Show logged-in badge
+                const userBadge = document.getElementById('userBadge');
+                userBadge.innerText = 'Logged in as: ' + validUser.name + ' (' + validUser.email + ')';
+                userBadge.style.display = 'block';
+
+                document.getElementById('auth-section').style.display = 'none';
+            } else {
+                alert('Error: Account not found or password incorrect!\n\nPlease make sure you registered this account first.');
+            }
+        });
 
         function selectProduct(name, price, deposit) {
             document.getElementById('selectedItem').value = name + ' (₹' + price + '/mo + ₹' + deposit + ' Deposit)';
