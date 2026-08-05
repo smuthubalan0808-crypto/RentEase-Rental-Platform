@@ -31,7 +31,6 @@
         .auth-form { display: none; }
         .auth-form.active { display: block; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .user-badge { display: none; background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; margin-bottom: 1rem; text-align: center; }
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -49,9 +48,6 @@
 
     <div class="container">
         
-        <!-- User Status Badge -->
-        <div id="userBadge" class="user-badge"></div>
-
         <!-- User Authentication Card -->
         <div class="card auth-card" id="auth-section">
             <div class="tab-buttons">
@@ -222,93 +218,109 @@
     </div>
 
     <script>
-        // Toggle Login and Register tabs
+        // Tab Switching Functionality
         function switchTab(tab) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const forms = document.querySelectorAll('.auth-form');
-            tabs.forEach(t => t.classList.remove('active'));
-            forms.forEach(f => f.classList.remove('active'));
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const registerBtn = document.getElementById('registerTabBtn');
+
             if (tab === 'login') {
-                document.getElementById('loginTabBtn').classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
+                if (loginForm) loginForm.style.display = 'block';
+                if (registerForm) registerForm.style.display = 'none';
+                if (loginBtn) loginBtn.classList.add('active');
+                if (registerBtn) registerBtn.classList.remove('active');
             } else {
-                document.getElementById('registerTabBtn').classList.add('active');
-                document.getElementById('registerForm').classList.add('active');
+                if (loginForm) loginForm.style.display = 'none';
+                if (registerForm) registerForm.style.display = 'block';
+                if (registerBtn) registerBtn.classList.add('active');
+                if (loginBtn) loginBtn.classList.remove('active');
             }
         }
 
-        // Auto-place cursor in email input before @gmail.com
+        // Auto-cursor positioning for @gmail.com
         function setCursorToStart(inputElement) {
             if (inputElement.value === '@gmail.com') {
                 setTimeout(() => { inputElement.setSelectionRange(0, 0); }, 0);
             }
         }
 
-        // REAL REGISTRATION FUNCTIONALITY
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Handle Registration and Login Submissions
+        document.addEventListener('DOMContentLoaded', function () {
+            const regForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
 
-            let name = document.getElementById('regName').value.trim();
-            let email = document.getElementById('regEmail').value.trim();
-            let password = document.getElementById('regPassword').value;
+            if (regForm) {
+                regForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-            if (!email.includes('@')) email += '@gmail.com';
+                    const nameInput = document.getElementById('regName');
+                    const emailInput = document.getElementById('regEmail');
+                    const passInput = document.getElementById('regPassword');
 
-            // Get existing users array from browser storage
-            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+                    const name = nameInput ? nameInput.value.trim() : 'User';
+                    let email = emailInput ? emailInput.value.trim() : '';
+                    const password = passInput ? passInput.value : '';
 
-            // Check if user already exists
-            let existingUser = users.find(u => u.email === email);
-            if (existingUser) {
-                alert('User with email "' + email + '" is already registered! Please log in.');
-                switchTab('login');
-                document.getElementById('loginEmail').value = email;
-                return;
+                    if (!email) {
+                        alert('Please enter an email address.');
+                        return;
+                    }
+
+                    if (!email.includes('@')) {
+                        email = email + '@gmail.com';
+                    }
+
+                    // Save user locally
+                    let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+                    let existingUser = users.find(u => u.email === email);
+
+                    if (existingUser) {
+                        alert('User ' + email + ' is already registered! Switching to login form.');
+                        switchTab('login');
+                        return;
+                    }
+
+                    users.push({ name: name, email: email, password: password });
+                    localStorage.setItem('rentEaseUsers', JSON.stringify(users));
+
+                    // Alert on success
+                    alert('Success! Profile created for ' + name + ' (' + email + '). You can now log in.');
+
+                    // Reset inputs and move to login
+                    if (emailInput) emailInput.value = '@gmail.com';
+                    if (passInput) passInput.value = '';
+                    switchTab('login');
+                });
             }
 
-            // Save new user object
-            users.push({ name: name, email: email, password: password });
-            localStorage.setItem('rentEaseUsers', JSON.stringify(users));
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-            alert('Account created successfully for ' + name + ' (' + email + ')!\n\nYou can now log in.');
+                    const emailInput = document.getElementById('loginEmail');
+                    const passInput = document.getElementById('loginPassword');
 
-            // Clear inputs and open Login tab
-            document.getElementById('regName').value = '';
-            document.getElementById('regEmail').value = '@gmail.com';
-            document.getElementById('regPassword').value = '';
-            switchTab('login');
-            document.getElementById('loginEmail').value = email;
-        });
+                    let email = emailInput ? emailInput.value.trim() : '';
+                    const password = passInput ? passInput.value : '';
 
-        // REAL LOGIN FUNCTIONALITY
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+                    if (!email.includes('@')) email += '@gmail.com';
 
-            let email = document.getElementById('loginEmail').value.trim();
-            let password = document.getElementById('loginPassword').value;
+                    let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
+                    let validUser = users.find(u => u.email === email && u.password === password);
 
-            if (!email.includes('@')) email += '@gmail.com';
-
-            // Fetch stored users
-            let users = JSON.parse(localStorage.getItem('rentEaseUsers')) || [];
-            let validUser = users.find(u => u.email === email && u.password === password);
-
-            if (validUser) {
-                alert('Welcome back, ' + validUser.name + '! You are logged in successfully.');
-                
-                // Show logged-in badge
-                const userBadge = document.getElementById('userBadge');
-                userBadge.innerText = 'Logged in as: ' + validUser.name + ' (' + validUser.email + ')';
-                userBadge.style.display = 'block';
-
-                document.getElementById('auth-section').style.display = 'none';
-            } else {
-                alert('Error: Account not found or password incorrect!\n\nPlease make sure you registered this account first.');
+                    if (validUser) {
+                        alert('Welcome back, ' + validUser.name + '! Logged in successfully.');
+                    } else {
+                        alert('Account not found or password incorrect! Please register first.');
+                    }
+                });
             }
         });
 
         function selectProduct(name, price, deposit) {
-            document.getElementById('selectedItem').value = name + ' (₹' + price + '/mo + ₹' + deposit + ' Deposit)';
+            const itemInput = document.getElementById('selectedItem');
+            if (itemInput) itemInput.value = name + ' (₹' + price + '/mo + ₹' + deposit + ' Deposit)';
             window.location.hash = '#checkout';
         }
 
