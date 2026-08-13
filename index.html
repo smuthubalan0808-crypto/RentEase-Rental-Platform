@@ -421,6 +421,13 @@
                         <label style="font-size:0.8rem;">Issue Description</label>
                         <textarea id="maintDesc" placeholder="Describe the issue (e.g. Spin cycle issue)" rows="2" required style="padding:0.5rem; font-size:0.85rem; width:100%; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; outline:none;"></textarea>
                     </div>
+                    
+                    <!-- CAPTCHA for Maintenance Form -->
+                    <div class="form-group" style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.8rem;">Security Verification (<span id="maintCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                        <input type="text" id="maintCaptchaInput" placeholder="Enter code above" required style="padding:0.5rem; font-size:0.85rem;">
+                    </div>
+
                     <button type="submit" style="width:100%; padding:0.6rem; background:linear-gradient(135deg, #4f46e5, #7c3aed); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.85rem;">Submit Report</button>
                 </form>
                 <div id="generatedTicketDisplay" style="margin-top: 0.8rem; display: none;"></div>
@@ -495,7 +502,7 @@
 
     </div>
 
-    <!-- ADMIN / VENDOR LOGIN & REGISTRATION MODAL (WITH ADMIN APPROVAL FLOW) -->
+    <!-- ADMIN / VENDOR LOGIN & REGISTRATION MODAL (WITH CAPTCHA & ADMIN APPROVAL) -->
     <div class="modal-overlay hidden" id="adminLoginModal">
         <div class="modal-card">
             <span class="close-modal-btn" onclick="closeAdminPortalModal()">✕</span>
@@ -514,7 +521,14 @@
                     <label>Password</label>
                     <input type="password" id="adminPin" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-submit-auth">Login to Portal 🔐</button>
+                
+                <!-- CAPTCHA for Admin Login -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="adminLoginCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="adminLoginCaptchaInput" placeholder="Enter code above" required>
+                </div>
+
+                <button type="submit" class="btn-submit-auth">Unlock Portal 🔐</button>
             </form>
 
             <!-- Vendor Registration Request Form (Requires Admin Approval) -->
@@ -532,6 +546,13 @@
                     <label>Password</label>
                     <input type="password" id="vPass" placeholder="••••••••" required>
                 </div>
+
+                <!-- CAPTCHA for Vendor Register -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="vendorRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="vendorRegCaptchaInput" placeholder="Enter code above" required>
+                </div>
+
                 <button type="submit" class="btn-submit-auth">Request Admin Approval 📨</button>
             </form>
         </div>
@@ -556,6 +577,13 @@
                     <label>Password</label>
                     <input type="password" id="loginPassword" placeholder="••••••••" required>
                 </div>
+                
+                <!-- CAPTCHA for User Login -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="userLoginCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="userLoginCaptchaInput" placeholder="Enter code above" required>
+                </div>
+
                 <button type="submit" class="btn-submit-auth">Login to Account</button>
             </form>
 
@@ -573,6 +601,13 @@
                     <label>Password</label>
                     <input type="password" id="regPassword" placeholder="••••••••" required>
                 </div>
+
+                <!-- CAPTCHA for User Register -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="userRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="userRegCaptchaInput" placeholder="Enter code above" required>
+                </div>
+
                 <button type="submit" class="btn-submit-auth">Create Account</button>
             </form>
         </div>
@@ -640,7 +675,7 @@
         </div>
     </div>
 
-    <!-- SECURE TRANSACTION & PAYMENT GATEWAY MODAL -->
+    <!-- SECURE TRANSACTION & PAYMENT GATEWAY MODAL (WITH CAPTCHA) -->
     <div class="modal-overlay hidden" id="paymentModal">
         <div class="modal-card" style="max-width: 480px;">
             <span class="close-modal-btn" onclick="closePaymentModal()">✕</span>
@@ -676,6 +711,12 @@
                     <label>UPI ID / VPA</label>
                     <input type="text" id="upiIdInput" placeholder="username@okhdfcbank">
                 </div>
+            </div>
+
+            <!-- CAPTCHA for Checkout / Payment -->
+            <div class="form-group">
+                <label>Security Verification (<span id="paymentCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                <input type="text" id="paymentCaptchaInput" placeholder="Enter code above" required>
             </div>
 
             <div id="orderTicketDisplay" style="margin-top: 1rem; display: none;"></div>
@@ -738,6 +779,31 @@
             "Lakshadweep": ["Kavaratti", "Agatti", "Minicoy", "Andrott"],
             "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"]
         };
+
+        // CAPTCHA Generator Utility
+        let activeCaptchas = {};
+        function generateCaptcha(elementId) {
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            let code = "";
+            for (let i = 0; i < 5; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            activeCaptchas[elementId] = code;
+            const el = document.getElementById(elementId);
+            if (el) el.textContent = code;
+        }
+
+        function verifyCaptcha(elementId, inputId) {
+            const userVal = document.getElementById(inputId).value.trim();
+            const expected = activeCaptchas[elementId];
+            if (userVal !== expected) {
+                alert("Incorrect CAPTCHA code! Please try again.");
+                generateCaptcha(elementId);
+                document.getElementById(inputId).value = '';
+                return false;
+            }
+            return true;
+        }
 
         function initStates() {
             const stateSelect = document.getElementById('stateSelect');
@@ -808,6 +874,8 @@
 
         function openAuthModal() {
             document.getElementById('authModal').classList.remove('hidden');
+            generateCaptcha('userLoginCaptchaText');
+            generateCaptcha('userRegCaptchaText');
         }
 
         function closeAuthModal() {
@@ -830,11 +898,13 @@
                 regForm.classList.remove('active');
                 loginBtn.classList.add('active');
                 regBtn.classList.remove('active');
+                generateCaptcha('userLoginCaptchaText');
             } else {
                 loginForm.classList.remove('active');
                 regForm.classList.add('active');
                 regBtn.classList.add('active');
                 loginBtn.classList.remove('active');
+                generateCaptcha('userRegCaptchaText');
             }
         }
 
@@ -849,11 +919,13 @@
                 regForm.classList.remove('active');
                 loginBtn.classList.add('active');
                 regBtn.classList.remove('active');
+                generateCaptcha('adminLoginCaptchaText');
             } else {
                 loginForm.classList.remove('active');
                 regForm.classList.add('active');
                 regBtn.classList.add('active');
                 loginBtn.classList.remove('active');
+                generateCaptcha('vendorRegCaptchaText');
             }
         }
 
@@ -865,6 +937,8 @@
 
         function handleUserRegister(e) {
             e.preventDefault();
+            if (!verifyCaptcha('userRegCaptchaText', 'userRegCaptchaInput')) return;
+
             const name = document.getElementById('regName').value.trim();
             let email = document.getElementById('regEmail').value.trim();
             const pass = document.getElementById('regPassword').value;
@@ -883,6 +957,8 @@
 
         function handleUserLogin(e) {
             e.preventDefault();
+            if (!verifyCaptcha('userLoginCaptchaText', 'userLoginCaptchaInput')) return;
+
             let email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPassword').value;
 
@@ -897,6 +973,7 @@
                 closeAuthModal();
             } else {
                 alert('User not found or password incorrect! Please register first.');
+                generateCaptcha('userLoginCaptchaText');
             }
         }
 
@@ -908,6 +985,7 @@
                 window.location.hash = '#adminSection';
             } else {
                 document.getElementById('adminLoginModal').classList.remove('hidden');
+                generateCaptcha('adminLoginCaptchaText');
                 renderVendorRequests();
             }
         }
@@ -918,6 +996,8 @@
 
         function submitVendorRequest(e) {
             e.preventDefault();
+            if (!verifyCaptcha('vendorRegCaptchaText', 'vendorRegCaptchaInput')) return;
+
             const name = document.getElementById('vName').value.trim();
             const email = document.getElementById('vEmail').value.trim();
             const pass = document.getElementById('vPass').value.trim();
@@ -967,6 +1047,8 @@
 
         function verifyAdminPin(e) {
             e.preventDefault();
+            if (!verifyCaptcha('adminLoginCaptchaText', 'adminLoginCaptchaInput')) return;
+
             const user = document.getElementById('adminUser').value.trim();
             const pin = document.getElementById('adminPin').value.trim();
 
@@ -992,6 +1074,7 @@
                 window.location.hash = '#adminSection';
             } else {
                 alert('Login denied. Either incorrect credentials or your registration request is still pending Admin approval.');
+                generateCaptcha('adminLoginCaptchaText');
             }
         }
 
@@ -1074,6 +1157,7 @@
             document.getElementById('payLocDisplay').textContent = fullLoc;
             document.getElementById('orderTicketDisplay').style.display = 'none';
             document.getElementById('paymentModal').classList.remove('hidden');
+            generateCaptcha('paymentCaptchaText');
         }
 
         function closePaymentModal() {
@@ -1094,6 +1178,8 @@
         }
 
         function completeSecureTransaction() {
+            if (!verifyCaptcha('paymentCaptchaText', 'paymentCaptchaInput')) return;
+
             const orderTicketId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
             let tickets = JSON.parse(localStorage.getItem('rentEaseTickets')) || [];
             tickets.push({ id: orderTicketId, response: 'Secure transaction verified. Order active and scheduled for delivery.' });
@@ -1127,6 +1213,7 @@
                             document.getElementById('payLocDisplay').textContent = locStr;
                             document.getElementById('orderTicketDisplay').style.display = 'none';
                             document.getElementById('paymentModal').classList.remove('hidden');
+                            generateCaptcha('paymentCaptchaText');
                         }, 600);
                     },
                     function() {
@@ -1139,6 +1226,8 @@
 
         function handleRaiseMaintenance(e) {
             e.preventDefault();
+            if (!verifyCaptcha('maintCaptchaText', 'maintCaptchaInput')) return;
+
             const itemName = document.getElementById('maintItemName').value;
             const desc = document.getElementById('maintDesc').value;
             const randomId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
@@ -1156,6 +1245,7 @@
 
             document.getElementById('raiseMaintenanceForm').reset();
             document.getElementById('checkTicketId').value = randomId;
+            generateCaptcha('maintCaptchaText');
             searchTicket();
         }
 
@@ -1182,6 +1272,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initStates();
             renderProducts(products);
+            generateCaptcha('maintCaptchaText');
             
             const activeUser = localStorage.getItem('rentEaseActiveUser');
             if (activeUser) {
