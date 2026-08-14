@@ -502,7 +502,7 @@
 
     </div>
 
-    <!-- ADMIN / VENDOR LOGIN & REGISTRATION MODAL (WITH CAPTCHA, OTP & APPROVAL) -->
+    <!-- ADMIN / VENDOR LOGIN & REGISTRATION MODAL (WITH CAPTCHA & ADMIN APPROVAL) -->
     <div class="modal-overlay hidden" id="adminLoginModal">
         <div class="modal-card">
             <span class="close-modal-btn" onclick="closeAdminPortalModal()">✕</span>
@@ -522,6 +522,7 @@
                     <input type="password" id="adminPin" placeholder="••••••••" required>
                 </div>
                 
+                <!-- CAPTCHA for Admin Login -->
                 <div class="form-group">
                     <label>Security Verification (<span id="adminLoginCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
                     <input type="text" id="adminLoginCaptchaInput" placeholder="Enter code above" required>
@@ -530,43 +531,34 @@
                 <button type="submit" class="btn-submit-auth">Unlock Portal 🔐</button>
             </form>
 
-            <!-- Vendor Registration Request Form (Requires OTP & Admin Approval) -->
-            <div id="vendorRegContainer" class="auth-form">
-                <div id="vendorRegStep1">
-                    <div class="modal-sub" style="margin-bottom:0.8rem; font-size:0.8rem;">Step 1: Enter your details & request OTP to verify your mobile/Gmail.</div>
-                    <div class="form-group">
-                        <label>Vendor Full Name</label>
-                        <input type="text" id="vName" placeholder="Vendor Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Gmail Address / Mobile</label>
-                        <input type="text" id="vEmail" placeholder="vendor@gmail.com / Mobile" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="vPass" placeholder="••••••••" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Security Verification (<span id="vendorRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
-                        <input type="text" id="vendorRegCaptchaInput" placeholder="Enter code above" required>
-                    </div>
-                    <button type="button" class="btn-submit-auth" onclick="sendVendorOtp()">Send OTP 📱</button>
+            <!-- Vendor Registration Request Form (Requires Admin Approval) -->
+            <form id="portalRegisterForm" class="auth-form" onsubmit="submitVendorRequest(event)">
+                <div class="modal-sub" style="margin-bottom:0.8rem; font-size:0.8rem;">Submit your Gmail and password for Admin approval before registration is accepted.</div>
+                <div class="form-group">
+                    <label>Vendor Full Name</label>
+                    <input type="text" id="vName" placeholder="Vendor Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Gmail Address</label>
+                    <input type="email" id="vEmail" placeholder="vendor@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="vPass" placeholder="••••••••" required>
                 </div>
 
-                <div id="vendorRegStep2" style="display: none;">
-                    <div class="modal-sub" style="margin-bottom:0.8rem; font-size:0.8rem;">Step 2: Enter the 4-digit OTP sent to your Gmail/Mobile.</div>
-                    <div style="background:#ede9fe; color:#4f46e5; padding:0.6rem; border-radius:8px; font-weight:bold; text-align:center; margin-bottom:0.8rem; font-size:0.9rem;">Simulated OTP sent: <span id="displayVendorOtp" style="letter-spacing:2px; font-size:1.1rem;"></span></div>
-                    <div class="form-group">
-                        <label>Enter 4-Digit OTP</label>
-                        <input type="text" id="vOtpInput" placeholder="1234" maxlength="4" required>
-                    </div>
-                    <button type="button" class="btn-submit-auth" onclick="verifyVendorOtpAndRegister()">Verify OTP & Request Approval 📨</button>
+                <!-- CAPTCHA for Vendor Register -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="vendorRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="vendorRegCaptchaInput" placeholder="Enter code above" required>
                 </div>
-            </div>
+
+                <button type="submit" class="btn-submit-auth">Request Admin Approval 📨</button>
+            </form>
         </div>
     </div>
 
-    <!-- USER LOGIN / REGISTER MODAL (WITH OTP) -->
+    <!-- USER LOGIN / REGISTER MODAL -->
     <div class="modal-overlay hidden" id="authModal">
         <div class="modal-card">
             <span class="close-modal-btn" onclick="closeAuthModal()">✕</span>
@@ -586,6 +578,7 @@
                     <input type="password" id="loginPassword" placeholder="••••••••" required>
                 </div>
                 
+                <!-- CAPTCHA for User Login -->
                 <div class="form-group">
                     <label>Security Verification (<span id="userLoginCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
                     <input type="text" id="userLoginCaptchaInput" placeholder="Enter code above" required>
@@ -594,40 +587,29 @@
                 <button type="submit" class="btn-submit-auth">Login to Account</button>
             </form>
 
-            <!-- Registration Form with OTP Verification Steps -->
-            <div id="userRegContainer" class="auth-form">
-                <div id="userRegStep1">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="regName" placeholder="John Doe" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address / Mobile</label>
-                        <input type="text" id="regEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="regPassword" placeholder="••••••••" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Security Verification (<span id="userRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
-                        <input type="text" id="userRegCaptchaInput" placeholder="Enter code above" required>
-                    </div>
-
-                    <button type="button" class="btn-submit-auth" onclick="sendUserOtp()">Send OTP to Gmail/Mobile 📱</button>
+            <!-- Registration Form -->
+            <form id="userRegisterForm" class="auth-form" onsubmit="handleUserRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" id="regEmail" value="@gmail.com" onfocus="setCursorToStart(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required>
                 </div>
 
-                <div id="userRegStep2" style="display: none;">
-                    <div class="modal-sub" style="margin-bottom:0.8rem; font-size:0.85rem;">Please enter the 4-digit OTP sent to your registered Gmail/Mobile.</div>
-                    <div style="background:#ede9fe; color:#4f46e5; padding:0.6rem; border-radius:8px; font-weight:bold; text-align:center; margin-bottom:0.8rem; font-size:0.9rem;">Simulated OTP received: <span id="displayUserOtp" style="letter-spacing:2px; font-size:1.1rem;"></span></div>
-                    <div class="form-group">
-                        <label>Enter 4-Digit OTP</label>
-                        <input type="text" id="userOtpInput" placeholder="1234" maxlength="4" required>
-                    </div>
-                    <button type="button" class="btn-submit-auth" onclick="verifyUserOtpAndRegister()">Verify OTP & Create Account ✅</button>
+                <!-- CAPTCHA for User Register -->
+                <div class="form-group">
+                    <label>Security Verification (<span id="userRegCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
+                    <input type="text" id="userRegCaptchaInput" placeholder="Enter code above" required>
                 </div>
-            </div>
+
+                <button type="submit" class="btn-submit-auth">Create Account</button>
+            </form>
         </div>
     </div>
 
@@ -693,7 +675,7 @@
         </div>
     </div>
 
-    <!-- SECURE TRANSACTION & PAYMENT GATEWAY MODAL -->
+    <!-- SECURE TRANSACTION & PAYMENT GATEWAY MODAL (WITH CAPTCHA) -->
     <div class="modal-overlay hidden" id="paymentModal">
         <div class="modal-card" style="max-width: 480px;">
             <span class="close-modal-btn" onclick="closePaymentModal()">✕</span>
@@ -731,6 +713,7 @@
                 </div>
             </div>
 
+            <!-- CAPTCHA for Checkout / Payment -->
             <div class="form-group">
                 <label>Security Verification (<span id="paymentCaptchaText" style="font-weight:900; color:#4f46e5;"></span>)</label>
                 <input type="text" id="paymentCaptchaInput" placeholder="Enter code above" required>
@@ -797,11 +780,8 @@
             "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam"]
         };
 
-        // CAPTCHA & OTP State
+        // CAPTCHA Generator Utility
         let activeCaptchas = {};
-        let generatedUserOtp = "";
-        let generatedVendorOtp = "";
-
         function generateCaptcha(elementId) {
             const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             let code = "";
@@ -896,8 +876,6 @@
             document.getElementById('authModal').classList.remove('hidden');
             generateCaptcha('userLoginCaptchaText');
             generateCaptcha('userRegCaptchaText');
-            document.getElementById('userRegStep1').style.display = 'block';
-            document.getElementById('userRegStep2').style.display = 'none';
         }
 
         function closeAuthModal() {
@@ -911,7 +889,7 @@
 
         function switchTab(tab) {
             const loginForm = document.getElementById('userLoginForm');
-            const regForm = document.getElementById('userRegContainer');
+            const regForm = document.getElementById('userRegisterForm');
             const loginBtn = document.getElementById('loginTabBtn');
             const regBtn = document.getElementById('registerTabBtn');
 
@@ -927,14 +905,12 @@
                 regBtn.classList.add('active');
                 loginBtn.classList.remove('active');
                 generateCaptcha('userRegCaptchaText');
-                document.getElementById('userRegStep1').style.display = 'block';
-                document.getElementById('userRegStep2').style.display = 'none';
             }
         }
 
         function switchPortalTab(tab) {
             const loginForm = document.getElementById('portalLoginForm');
-            const regForm = document.getElementById('vendorRegContainer');
+            const regForm = document.getElementById('portalRegisterForm');
             const loginBtn = document.getElementById('portalLoginTab');
             const regBtn = document.getElementById('portalRegisterTab');
 
@@ -950,8 +926,6 @@
                 regBtn.classList.add('active');
                 loginBtn.classList.remove('active');
                 generateCaptcha('vendorRegCaptchaText');
-                document.getElementById('vendorRegStep1').style.display = 'block';
-                document.getElementById('vendorRegStep2').style.display = 'none';
             }
         }
 
@@ -961,31 +935,9 @@
             }
         }
 
-        /* User OTP Workflow */
-        function sendUserOtp() {
+        function handleUserRegister(e) {
+            e.preventDefault();
             if (!verifyCaptcha('userRegCaptchaText', 'userRegCaptchaInput')) return;
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPassword').value;
-
-            if (!name || !email || !pass) {
-                alert("Please fill in all registration fields first.");
-                return;
-            }
-
-            generatedUserOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            document.getElementById('displayUserOtp').textContent = generatedUserOtp;
-            document.getElementById('userRegStep1').style.display = 'none';
-            document.getElementById('userRegStep2').style.display = 'block';
-            alert(`OTP sent successfully to ${email} (Simulated SMS/Gmail OTP: ${generatedUserOtp})`);
-        }
-
-        function verifyUserOtpAndRegister() {
-            const enteredOtp = document.getElementById('userOtpInput').value.trim();
-            if (enteredOtp !== generatedUserOtp) {
-                alert("Invalid OTP! Please enter the correct 4-digit code.");
-                return;
-            }
 
             const name = document.getElementById('regName').value.trim();
             let email = document.getElementById('regEmail').value.trim();
@@ -998,7 +950,7 @@
             localStorage.setItem('rentEaseUsers', JSON.stringify(users));
             localStorage.setItem('rentEaseActiveUser', name);
 
-            alert('OTP Verified! Account created successfully for ' + name + '. You are now logged in.');
+            alert('Account created for ' + name + '! You are now logged in.');
             document.getElementById('userLoginHeaderBtn').textContent = '👤 ' + name;
             closeAuthModal();
         }
@@ -1025,7 +977,7 @@
             }
         }
 
-        /* Vendor & Admin Approval & OTP Workflow */
+        /* Vendor & Admin Approval Logic */
         function openAdminPortalModal() {
             const isUnlocked = localStorage.getItem('rentEaseAdminUnlocked');
             if (isUnlocked === 'true') {
@@ -1035,8 +987,6 @@
                 document.getElementById('adminLoginModal').classList.remove('hidden');
                 generateCaptcha('adminLoginCaptchaText');
                 renderVendorRequests();
-                document.getElementById('vendorRegStep1').style.display = 'block';
-                document.getElementById('vendorRegStep2').style.display = 'none';
             }
         }
 
@@ -1044,30 +994,9 @@
             document.getElementById('adminLoginModal').classList.add('hidden');
         }
 
-        function sendVendorOtp() {
+        function submitVendorRequest(e) {
+            e.preventDefault();
             if (!verifyCaptcha('vendorRegCaptchaText', 'vendorRegCaptchaInput')) return;
-            const name = document.getElementById('vName').value.trim();
-            const email = document.getElementById('vEmail').value.trim();
-            const pass = document.getElementById('vPass').value.trim();
-
-            if (!name || !email || !pass) {
-                alert("Please fill in all vendor registration details first.");
-                return;
-            }
-
-            generatedVendorOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            document.getElementById('displayVendorOtp').textContent = generatedVendorOtp;
-            document.getElementById('vendorRegStep1').style.display = 'none';
-            document.getElementById('vendorRegStep2').style.display = 'block';
-            alert(`Vendor OTP sent successfully to ${email} (Simulated OTP: ${generatedVendorOtp})`);
-        }
-
-        function verifyVendorOtpAndRegister() {
-            const enteredOtp = document.getElementById('vOtpInput').value.trim();
-            if (enteredOtp !== generatedVendorOtp) {
-                alert("Invalid OTP! Please enter the correct 4-digit code.");
-                return;
-            }
 
             const name = document.getElementById('vName').value.trim();
             const email = document.getElementById('vEmail').value.trim();
@@ -1077,7 +1006,7 @@
             pending.push({ name, email, pass });
             localStorage.setItem('rentEasePendingVendors', JSON.stringify(pending));
 
-            alert('OTP Verified! Vendor registration request submitted to Admin for final approval.');
+            alert('Registration request submitted successfully! Your Gmail & password are sent to Admin for approval.');
             document.getElementById('portalRegisterForm').reset();
             closeAdminPortalModal();
         }
@@ -1144,7 +1073,7 @@
                 alert(`Welcome Vendor ${matchedVendor.name}! Portal unlocked.`);
                 window.location.hash = '#adminSection';
             } else {
-                alert('Login denied. Incorrect credentials or pending Admin approval.');
+                alert('Login denied. Either incorrect credentials or your registration request is still pending Admin approval.');
                 generateCaptcha('adminLoginCaptchaText');
             }
         }
